@@ -10,13 +10,6 @@
   border-top: 2px solid whitesmoke;
 }
 
-.websiteName {
-  margin-top: 20px;
-  font-family: "Verdana", sans-serif;
-  color: whitesmoke;
-  font-size: calc(15px + 2vmin);
-}
-
 .bottomContainer {
   display: flex;
   flex-wrap: wrap;
