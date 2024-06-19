@@ -47,13 +47,10 @@ export default function AboutMe() {
         <div className="box2">
           <p className="sinfo">Goals:</p>
           <p className="sinfo">
-            My immediate focus centers on wrapping up my Stocker project
-            efficiently, paving the way to delve into mastering spaCy and NER
-            models. Using my gained knowledge of NLP models, I wish to create an
-            advanced chatbot utilizing spaCy's capabilities. Beyond that, I am
-            committed to pushing the boundaries of machine learning and
-            artificial intelligence, driving their impactful integration across
-            diverse societal landscapes.
+            * Advancing my knowledge in full-stack developement and machine learning.
+          </p>
+          <p className="sinfo">
+            * Building a Google Chrome plugin for creating GitHub README's using AI
           </p>
         </div>
       </div>
