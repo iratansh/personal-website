@@ -75,13 +75,13 @@ export default function Portfolio() {
           <div className="box4">
             <p className="sinfoHeader">
               NLP+ML Project: Advanced Safety and Risk Management System for
-              Asian Industry Web Application (Data Analyst):{" "}
+              Asian Industry Web Application:
             </p>
             <p className="sinfo">
               Implemented K-Nearest Neighbors (KNN) machine learning algorithm
               for missing data imputation with a 94% accuracy. Conducted
               thorough analysis of safety reports, adeptly using diverse
-              graphical representations to communicate correlations efficiently.{" "}
+              graphical representations to communicate correlations efficiently.
             </p>
             <a
               href="https://github.com/iratansh/Python/tree/main/UAIS%20Project"
@@ -94,18 +94,18 @@ export default function Portfolio() {
 
           <div className="box4">
             <p className="sinfoHeader">
-              Reinforcement Learning with the Puddle World Environment:
+              HelpBot:
             </p>
             <p className="sinfo">
-              Applied Deep Q-Learning (DQL) techniques to address a complex
-              challenge: guiding an entity to navigate and discover the shortest
-              path to a target destination on a continuous observation space.
-              Leveraging an array of powerful libraries such as Gym, Matplotlib,
-              NumPy, and PyTorch, I meticulously trained the agent to
-              dynamically explore and exploit its surroundings.{" "}
+              Created a chatbot using spaCy
+              for entity recognition and ChatterBot for conversation flow, achieving an 85% accuracy in
+              understanding user intents and generating contextually relevant responses.
+              Integrated APIs for real-time weather updates, stock and ETF information, and utilized BeautifulSoup for
+              web scraping, ensuring accurate and timely data delivery. Enhanced data retrieval speed by 40% to
+              optimize user experience.
             </p>
             <a
-              href="https://github.com/iratansh/Python/tree/main/Upper%20Bound%202024"
+              href="https://github.com/iratansh/Python/tree/main/HelpBot"
               target="blank"
               rel="noopener noreferrer"
             >
@@ -114,14 +114,14 @@ export default function Portfolio() {
           </div>
 
           <div className="box4">
-            <p className="sinfoHeader">Personal Website:</p>
+            <p className="sinfoHeader">WebEdit:</p>
             <p className="sinfo">
-              I've crafted a personal project using React, Vite, and JavaScript.
-              This platform serves as a showcase for my web development skills,
-              and features my projects and my goals in programming.
+              Utilized React.js and Node.js to develop a dynamic document creation and editing full-stack web application, ensuring seamless integration and scalability for up to 10k concurrent users.
+              Integrated an advanced word completion feature using over 466k words and Tries data structure.
+              Added features for real-time suggestions and efficient editing capabilities.
             </p>
             <a
-              href="https://github.com/iratansh/React/tree/main/Personal%20Website"
+              href="https://github.com/iratansh/Python/tree/main/WebEdit%20FullStack%20App"
               target="blank"
               rel="noopener noreferrer"
             >
@@ -133,3 +133,4 @@ export default function Portfolio() {
     </>
   );
 }
+
