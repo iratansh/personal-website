@@ -22,7 +22,8 @@ export default function AboutMe() {
 
         <div className="box">
           <p className="sinfoHeader">Availability:</p>
-          <p className="sinfo">Full-Time Starting May 2025</p>
+          <p className="sinfo">Full-Time</p>
+          <p>Starting May 2025</p>
         </div>
       </div>
 
