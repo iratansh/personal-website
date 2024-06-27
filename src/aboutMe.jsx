@@ -50,9 +50,6 @@ export default function AboutMe() {
           <p className="sinfo">
             * Advancing my knowledge in full-stack developement and machine learning.
           </p>
-          <p className="sinfo">
-            * Building a Google Chrome plugin for creating GitHub README's using AI
-          </p>
         </div>
       </div>
 
