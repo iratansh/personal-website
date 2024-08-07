@@ -9,20 +9,7 @@ export default function Competitions() {
         </p>
 
         <div className="container">
-          <div className="box3">
-            <p className="compHeader">
-              Upper Bound 2024 (Alberta Machine Intelligence Institute)
-            </p>
-            <p className="comp">
-              Applied Q-Learning and Proximal Policy Optimization (PPO)
-              techniques to address a complex challenge: guiding an entity to
-              navigate and discover the shortest path to a target destination
-              over a continuous state space. Leveraging an array of powerful
-              libraries such as Gym, Matplotlib, NumPy, and Stable Baslines3,
-              meticulously trained an agent to dynamically explore and exploit
-              its surroundings.
-            </p>
-          </div>
+ 
 
           <div className="box3">
             <p className="compHeader">
