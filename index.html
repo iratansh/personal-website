@@ -2,11 +2,60 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ishaan's Personal Portfolio Website</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Ishaan Ratanshi — NEXUS · Infrastructure &amp; Platform Engineering</title>
+    <meta
+      name="description"
+      content="Ishaan Ratanshi is a Computer Science student at the University of Alberta building infrastructure, observability, and distributed systems — SDE co-op at RBC, previously telemetry data engineering at Elk Valley Resources."
+    />
+    <meta name="author" content="Ishaan Ratanshi" />
+    <meta name="theme-color" content="#07090b" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="canonical" href="https://iratansh.github.io/personal-website/" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ishaan Ratanshi — NEXUS" />
+    <meta
+      property="og:description"
+      content="An interactive engineering command center: infrastructure, SRE, observability, and distributed systems work by Ishaan Ratanshi."
+    />
+    <meta property="og:url" content="https://iratansh.github.io/personal-website/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Ishaan Ratanshi — NEXUS" />
+    <meta
+      name="twitter:description"
+      content="Infrastructure, SRE, observability, and distributed systems — explored through an interactive command center."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ishaan Ratanshi",
+        "url": "https://iratansh.github.io/personal-website/",
+        "jobTitle": "Software Developer Co-op, Site Reliability Engineering",
+        "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Alberta" },
+        "sameAs": ["https://github.com/iratansh", "https://www.linkedin.com/in/ishaan-ratanshi/"]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <noscript>
+      <p style="font-family: system-ui; color: #ddd; background: #07090b; padding: 2rem">
+        NEXUS needs JavaScript. Ishaan Ratanshi — Computer Science, University of Alberta.
+        <a href="https://github.com/iratansh" style="color: #34e0a1">GitHub</a> ·
+        <a href="https://www.linkedin.com/in/ishaan-ratanshi/" style="color: #34e0a1">LinkedIn</a>
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -1,0 +1,86 @@
+:root {
+  /* Surfaces — near-black with a faint green cast */
+  --bg-0: #050708;
+  --bg-1: #080b0d;
+  --bg-2: #0c1013;
+  --bg-3: #11171a;
+  --bg-raise: #141b1f;
+
+  /* Lines */
+  --line-0: rgba(150, 220, 200, 0.055);
+  --line-1: rgba(150, 220, 200, 0.1);
+  --line-2: rgba(150, 220, 200, 0.18);
+  --line-3: rgba(150, 220, 200, 0.3);
+
+  /* Text */
+  --fg-0: #e9f0ee;
+  --fg-1: #aab7b3;
+  --fg-2: #6d7b77;
+  --fg-3: #46524f;
+
+  /* Signal colours */
+  --emerald: #34e0a1;
+  --emerald-dim: #1f9b6e;
+  --cyan: #5ad8ff;
+  --blue: #4d84ff;
+  --violet: #a68bff;
+  --amber: #ffbf5e;
+  --red: #ff6274;
+
+  --accent: var(--emerald);
+  --accent-2: var(--cyan);
+  --accent-rgb: 52, 224, 161;
+  --accent-glow: rgba(var(--accent-rgb), 0.35);
+
+  /* Type */
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+
+  --fs-micro: 0.6875rem; /* 11 */
+  --fs-xs: 0.75rem; /* 12 */
+  --fs-sm: 0.8125rem; /* 13 */
+  --fs-base: 0.9375rem; /* 15 */
+  --fs-md: 1.0625rem; /* 17 */
+  --fs-lg: 1.375rem;
+  --fs-xl: clamp(1.75rem, 1.2rem + 1.8vw, 2.5rem);
+  --fs-display: clamp(2.75rem, 1.4rem + 4.6vw, 5.25rem);
+
+  /* Space (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+
+  --topbar-h: 48px;
+  --statusbar-h: 0px;
+  --rail-w: 232px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 420ms;
+}
+
+/* Easter egg: konami code shifts the accent to violet */
+:root[data-overdrive="on"] {
+  --accent: var(--violet);
+  --accent-2: #ff7ad9;
+  --accent-rgb: 166, 139, 255;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --topbar-h: 52px;
+  }
+}
