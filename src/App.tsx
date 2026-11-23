@@ -57,7 +57,7 @@ function useGlobalKeys() {
         konami.current = [];
         setOverdrive(!overdrive);
         track("easter_egg", { name: "konami" });
-        toast(overdrive ? "Overdrive disengaged" : "OVERDRIVE ENGAGED — accent bus rerouted", "violet");
+        toast(overdrive ? "Overdrive disengaged" : "OVERDRIVE ENGAGED: accent bus rerouted", "violet");
         return;
       }
 
@@ -99,10 +99,10 @@ function Shell() {
   useEffect(() => {
     const m = moduleById[route.module];
     document.title = route.notFound
-      ? "Not found — NEXUS"
+      ? `Not found · ${profile.name}`
       : route.module === "overview"
-        ? `${profile.name} — NEXUS`
-        : `${route.param ? route.param + " · " : ""}${m.label} — NEXUS`;
+        ? `${profile.name} · Backend, Cloud & Applied AI Engineering`
+        : `${route.param ? route.param + " · " : ""}${m.label} · ${profile.name}`;
     const url = `https://iratansh.github.io${toHref(route)}`;
     document.querySelector('link[rel="canonical"]')?.setAttribute("href", url);
     document.querySelector('meta[property="og:url"]')?.setAttribute("content", url);

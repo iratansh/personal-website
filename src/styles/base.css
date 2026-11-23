@@ -121,7 +121,7 @@ canvas {
   border-radius: 8px;
 }
 
-/* ———————————————————————— Typographic primitives */
+/* ------------------------ Typographic primitives */
 .mono {
   font-family: var(--font-mono);
   font-feature-settings: "zero", "ss02";
@@ -150,7 +150,7 @@ canvas {
   color: var(--fg-2);
 }
 
-/* ———————————————————————— Shared components */
+/* ------------------------ Shared components */
 .kbd {
   display: inline-flex;
   align-items: center;

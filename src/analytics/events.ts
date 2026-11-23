@@ -1,5 +1,5 @@
 /**
- * Catalog of custom interaction events. Properties are short, non-identifying strings —
+ * Catalog of custom interaction events. Properties are short, non-identifying strings,
  * never free text a visitor typed (terminal arguments and form contents are not recorded).
  */
 export const EVENTS = {

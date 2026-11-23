@@ -1,4 +1,4 @@
-/* ———————————————————————— Terminal */
+/* ------------------------ Terminal */
 .terminal {
   position: fixed;
   left: var(--rail-w);
@@ -178,7 +178,7 @@
   height: 10px;
 }
 
-/* ———————————————————————— Command palette */
+/* ------------------------ Command palette */
 .palette-overlay {
   position: fixed;
   inset: 0;
@@ -308,7 +308,7 @@
   margin-left: auto;
 }
 
-/* ———————————————————————— Boot */
+/* ------------------------ Boot */
 .boot {
   position: fixed;
   inset: 0;

@@ -8,7 +8,7 @@ import { profile } from "../../data/profile";
 import { Wordmark } from "../shell/TopBar";
 
 const LINES = [
-  ["kernel", "NEXUS 1.0 — cold start"],
+  ["kernel", "iratansh 1.0: cold start"],
   ["mount", `/registry ${".".repeat(10)} ${projects.length} services`],
   ["mount", `/experience ${".".repeat(8)} ${experience.length} roles`],
   ["mount", `/lab ${".".repeat(15)} ${lab.length} experiments`],

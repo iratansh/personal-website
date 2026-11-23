@@ -1,6 +1,6 @@
 /**
  * Measures Core Web Vitals for *this* browser session using PerformanceObserver.
- * Nothing here is sent anywhere — it powers the "this session" panel in the dev dashboard.
+ * Nothing here is sent anywhere. It powers the "this session" panel in the dev dashboard.
  * (Cloudflare measures field vitals for real visitors on its own.)
  */
 export interface SessionVitals {

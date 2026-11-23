@@ -21,11 +21,11 @@ export default function Contact() {
       toast("Email address copied to clipboard");
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
-      toast("Clipboard unavailable — " + profile.email, "warn");
+      toast("Clipboard unavailable: " + profile.email, "warn");
     }
   };
 
-  const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(subject || "Hello from NEXUS")}&body=${encodeURIComponent(body)}`;
+  const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(subject || "Hello from your portfolio")}&body=${encodeURIComponent(body)}`;
 
   const channels: { label: string; value: string; href: string; icon: React.ReactNode; ext?: boolean }[] = [
     { label: "GitHub", value: `github.com/${profile.handle}`, href: profile.links.github, icon: <FaGithub />, ext: true },
@@ -44,13 +44,13 @@ export default function Contact() {
       <ViewHeader
         index="06"
         kicker="Contact"
-        title="Open a channel."
+        title="Get in touch."
         lede={profile.openTo}
       />
 
       <div className="contact-grid">
         <Reveal className="contact-primary frame">
-          <span className="label">Primary channel · email</span>
+          <span className="label">Email</span>
           <a className="contact-email" href={`mailto:${profile.email}`}>
             {profile.email}
           </a>
@@ -79,7 +79,7 @@ export default function Contact() {
 
         <Reveal className="contact-compose frame" delay={0.08}>
           <div className="compose-head">
-            <span className="label">Compose · transmits via your mail client</span>
+            <span className="label">Write a message · opens your mail client</span>
             <span className="compose-lights" aria-hidden="true">
               <i />
               <i />
@@ -108,7 +108,7 @@ export default function Contact() {
             <div className="compose-foot">
               <span className="mono dim">{body.length} chars · no data leaves this page until you send</span>
               <button className="btn btn-primary" type="submit">
-                Transmit <Icon name="arrowRight" className="nudge" />
+                Send <Icon name="arrowRight" className="nudge" />
               </button>
             </div>
           </form>

@@ -41,7 +41,7 @@ export function Rail() {
 
       <div className="rail-foot" data-track-source="rail">
         <div className="rail-now">
-          <span className="label">Current process</span>
+          <span className="label">Currently</span>
           <p>
             <span className="dot pulse" /> SDE Co-op · RBC
           </p>
@@ -78,7 +78,7 @@ export function MobileNav() {
           aria-current={route.module === m.id ? "page" : undefined}
         >
           <Icon name={moduleIcon[m.id]} size={18} />
-          <span>{m.label.split(" ").pop()}</span>
+          <span>{m.short ?? m.label.split(" ").pop()}</span>
         </a>
       ))}
     </nav>

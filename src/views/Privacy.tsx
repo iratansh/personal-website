@@ -24,7 +24,7 @@ export default function Privacy() {
   return (
     <div className="view privacy">
       <ViewHeader
-        index="—"
+        index="·"
         kicker="Privacy"
         title="What this site measures."
         lede="Plain-language disclosure of the analytics on this site. No advertising, no cross-site tracking, and nothing that identifies you personally."
@@ -89,7 +89,7 @@ export default function Privacy() {
       <section className="pv-sec">
         <SectionHead index="02" title="What is collected" />
         <ul className="pv-list">
-          <li>The page you viewed (path only — query strings and fragments are dropped) and the referring site.</li>
+          <li>The page you viewed (path only; query strings and fragments are dropped) and the referring site.</li>
           <li>Browser, operating system, and device type, derived from the user-agent string.</li>
           <li>Approximate country, derived by the provider from your IP address at request time.</li>
           {configured.includes("goatcounter") && (
@@ -103,7 +103,7 @@ export default function Privacy() {
           )}
           {hasEvents && (
             <li>
-              Anonymous interaction counts — e.g. “résumé opened”, “GitHub link clicked”, or the <em>name</em> of a terminal
+              Anonymous interaction counts, e.g. “résumé opened”, “GitHub link clicked”, or the <em>name</em> of a terminal
               command. Terminal arguments, search queries, and anything you type into forms are never recorded.
             </li>
           )}
@@ -124,8 +124,8 @@ export default function Privacy() {
       <section className="pv-sec">
         <SectionHead index="04" title="Local storage on your device" />
         <p className="pv-p">
-          The site itself stores two small preferences in your browser — your motion setting and, if you choose it, your
-          analytics opt-out — plus a session flag so the boot animation only plays once. These never leave your device.
+          The site itself stores two small preferences in your browser (your motion setting and, if you choose it, your
+          analytics opt-out), plus a session flag so the boot animation only plays once. These never leave your device.
         </p>
       </section>
 

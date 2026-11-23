@@ -14,6 +14,8 @@ export interface ModuleDef {
   label: string;
   path: string; // filesystem-ish path used in the breadcrumb & terminal
   blurb: string;
+  /** Label for the compact mobile tab bar (defaults to the last word of `label`). */
+  short?: string;
   /** Reachable by URL but not listed in navigation. */
   hidden?: boolean;
   /** Only exists in local development builds (never shipped to production). */
@@ -21,13 +23,13 @@ export interface ModuleDef {
 }
 
 const ALL_MODULES: ModuleDef[] = [
-  { id: "overview", index: "01", label: "System Overview", path: "~", blurb: "Who I am, live admission-control demo, measured outputs" },
-  { id: "registry", index: "02", label: "Project Registry", path: "~/registry", blurb: "Projects as deployed services" },
-  { id: "experience", index: "03", label: "Experience", path: "~/experience", blurb: "Operational timeline" },
-  { id: "lab", index: "04", label: "Technical Lab", path: "~/lab", blurb: "Experiments and curiosity builds" },
-  { id: "knowledge", index: "05", label: "Knowledge Base", path: "~/kb", blurb: "Architecture breakdowns and notes" },
-  { id: "contact", index: "06", label: "Contact", path: "~/contact", blurb: "Open a channel" },
-  { id: "privacy", index: "—", label: "Privacy", path: "~/privacy", blurb: "What this site measures", hidden: true },
+  { id: "overview", index: "01", label: "System Overview", path: "~", blurb: "Who I am, a live admission-control demo, and how the work connects" },
+  { id: "registry", index: "02", label: "Project Registry", short: "Projects", path: "~/registry", blurb: "Projects as deployed services" },
+  { id: "experience", index: "03", label: "Experience", path: "~/experience", blurb: "Roles and results" },
+  { id: "lab", index: "04", label: "Technical Lab", path: "~/lab", blurb: "Side projects and research" },
+  { id: "knowledge", index: "05", label: "Knowledge Base", short: "Notes", path: "~/kb", blurb: "Architecture breakdowns and notes" },
+  { id: "contact", index: "06", label: "Contact", path: "~/contact", blurb: "Get in touch" },
+  { id: "privacy", index: "·", label: "Privacy", path: "~/privacy", blurb: "What this site measures", hidden: true },
   {
     id: "telemetry",
     index: "07",

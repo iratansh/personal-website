@@ -14,7 +14,7 @@ import { domains } from "../../data/domains";
 import { profile } from "../../data/profile";
 import { Icon } from "../ui/Icon";
 import { track } from "../../analytics";
-import { buildTopology, KIND_LABEL, type TopoLink, type TopoNode } from "./topologyData";
+import { buildTopology, kindLabel, type TopoLink, type TopoNode } from "./topologyData";
 
 const MONO = '"Geist Mono", ui-monospace, monospace';
 const SANS = '"Geist", system-ui, sans-serif';
@@ -73,7 +73,7 @@ export default function Topology() {
     live.current.dirty = true;
   }, [hovered, selected]);
 
-  /* ——— Physics ——— */
+  /* --- Physics --- */
   useEffect(() => {
     if (!size.width || !size.height) return;
     const { r1, r2 } = geometry(size.width, size.height);
@@ -124,7 +124,7 @@ export default function Topology() {
     };
   }, [graph, size.width, size.height]);
 
-  /* ——— Render ——— */
+  /* --- Render --- */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !size.width || !active) return;
@@ -342,11 +342,23 @@ export default function Topology() {
 
           const showLabel = isFocus || (focus ? focus.has(n.id) : showAllLabels);
           if (showLabel) {
-            const right = x >= 0;
-            ctx.textAlign = right ? "left" : "right";
             ctx.font = `${isFocus ? 500 : 400} 11.5px ${SANS}`;
             ctx.fillStyle = isFocus ? "#e9f0ee" : focus ? "#c6d1ce" : "rgba(170,183,179,0.7)";
-            ctx.fillText(n.label, x + (right ? 11 : -11), y + 0.5);
+            // Labels point outward; flip inward if they'd run off the canvas, else ellipsize.
+            const EDGE = 8;
+            const roomOut = x >= 0 ? w / 2 - EDGE - (x + 11) : x - 11 - (-w / 2 + EDGE);
+            const roomIn = x >= 0 ? x - 11 - (-w / 2 + EDGE) : w / 2 - EDGE - (x + 11);
+            const width = ctx.measureText(n.label).width;
+            const outward = width <= roomOut || roomOut >= roomIn;
+            const right = outward ? x >= 0 : x < 0;
+            let text = n.label;
+            const room = outward ? roomOut : roomIn;
+            if (width > room) {
+              while (text.length > 1 && ctx.measureText(text + "…").width > room) text = text.slice(0, -1);
+              text = text.trimEnd() + "…";
+            }
+            ctx.textAlign = right ? "left" : "right";
+            ctx.fillText(text, x + (right ? 11 : -11), y + 0.5);
           }
         }
         ctx.globalAlpha = 1;
@@ -356,7 +368,7 @@ export default function Topology() {
     return () => cancelAnimationFrame(raf);
   }, [active, size.width, size.height, reducedMotion, graph, neighbors]);
 
-  /* ——— Interaction ——— */
+  /* --- Interaction --- */
   const toLocal = (e: React.PointerEvent) => {
     const rect = canvasRef.current!.getBoundingClientRect();
     return [e.clientX - rect.left - rect.width / 2, e.clientY - rect.top - rect.height / 2] as const;
@@ -430,7 +442,7 @@ export default function Topology() {
           ref={canvasRef}
           className="topo-canvas"
           role="img"
-          aria-label="Interactive network map connecting six engineering domains to projects, roles, and experiments. Use the domain buttons below to explore with a keyboard."
+          aria-label="Interactive network map connecting six engineering domains to projects, roles, and lab entries. Use the domain buttons below to explore with a keyboard."
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -453,7 +465,7 @@ export default function Topology() {
             <i className="lg lg-di" /> role
           </span>
           <span>
-            <i className="lg lg-ci" /> experiment
+            <i className="lg lg-ci" /> lab
           </span>
         </div>
 
@@ -471,7 +483,7 @@ export default function Topology() {
             >
               <div className="topo-insp-head">
                 <span className="label" style={{ color: sel.hue }}>
-                  {KIND_LABEL[sel.kind]}
+                  {kindLabel(sel)}
                 </span>
                 <button onClick={() => setSelected(null)} aria-label="Close details" className="topo-insp-close">
                   <Icon name="close" size={12} />
@@ -487,7 +499,7 @@ export default function Topology() {
               </p>
               {sel.route && (
                 <button className="link-arrow" onClick={() => navigate(sel.route!)}>
-                  Open {KIND_LABEL[sel.kind].toLowerCase()} <Icon name="arrowRight" />
+                  Open {kindLabel(sel).toLowerCase()} <Icon name="arrowRight" />
                 </button>
               )}
               {related.length > 0 && (
@@ -501,7 +513,7 @@ export default function Topology() {
                         >
                           <i className={`lg ${r.kind === "project" ? "lg-sq" : r.kind === "role" ? "lg-di" : r.kind === "lab" ? "lg-ci" : "lg-dom"}`} style={{ color: r.hue }} />
                           <span>{r.label}</span>
-                          <span className="dim mono">{KIND_LABEL[r.kind].toLowerCase()}</span>
+                          <span className="dim mono">{kindLabel(r).toLowerCase()}</span>
                         </button>
                       </li>
                     ))}

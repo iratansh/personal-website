@@ -1,5 +1,5 @@
 /**
- * Analytics configuration (see ANALYTICS.md). Only *public* identifiers belong here — the
+ * Analytics configuration (see ANALYTICS.md). Only *public* identifiers belong here: the
  * Cloudflare beacon token and GoatCounter endpoint ship in every page by design.
  * This site has no analytics API credentials, and none may ever be added to frontend code.
  */
@@ -9,7 +9,7 @@ const env = import.meta.env;
 export const CLOUDFLARE_BEACON_TOKEN = "b17a6fbd4ed2485581597830e9e92954";
 
 /**
- * GoatCounter endpoint for custom interaction events — public by design (it ships in every page).
+ * GoatCounter endpoint for custom interaction events. Public by design (it ships in every page).
  * Format: https://<your-code>.goatcounter.com/count. Empty = events stay in the visitor's tab.
  */
 export const GOATCOUNTER_ENDPOINT = "https://iratansh.goatcounter.com/count";
@@ -23,13 +23,13 @@ export const analyticsConfig = {
   debug: env.DEV || flag(env.VITE_ANALYTICS_DEBUG),
   cloudflare: {
     /**
-     * Cloudflare Web Analytics site token — public by design (it ships in every page).
+     * Cloudflare Web Analytics site token. Public by design (it ships in every page).
      * Basic traffic analytics. VITE_CF_BEACON_TOKEN overrides it; an empty override keeps the default.
      */
     token: (env.VITE_CF_BEACON_TOKEN as string | undefined)?.trim() || CLOUDFLARE_BEACON_TOKEN,
   },
   goatcounter: {
-    /** Optional — custom interaction events. e.g. https://yourcode.goatcounter.com/count */
+    /** Optional: custom interaction events. e.g. https://yourcode.goatcounter.com/count */
     endpoint: (env.VITE_GOATCOUNTER_ENDPOINT as string | undefined)?.trim() || GOATCOUNTER_ENDPOINT,
   },
 };

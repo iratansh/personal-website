@@ -109,7 +109,7 @@ export const commands: Record<string, Command> = {
   whoami: {
     desc: "Print the current user",
     hidden: true,
-    run: () => "visitor — but the operator is " + profile.name + ". Try `about`.",
+    run: () => "visitor, but the operator is " + profile.name + ". Try `about`.",
   },
   projects: {
     desc: "List projects in the registry",
@@ -163,7 +163,7 @@ export const commands: Record<string, Command> = {
     desc: "Open a module, project, role, or note",
     usage: "open <target>",
     run: (args, ctx) => {
-      if (!args[0]) return <span className="t-warn">usage: open &lt;target&gt; — try `projects` for ids</span>;
+      if (!args[0]) return <span className="t-warn">usage: open &lt;target&gt; (try `projects` for ids)</span>;
       const r = resolveTarget(args.join("-"));
       if (!r) return <span className="t-err">open: no such target: {args.join(" ")}</span>;
       ctx.navigate(r);
@@ -271,14 +271,14 @@ export const commands: Record<string, Command> = {
    ▐▌  ▐▌`}</pre>
         <div>
           <div className="t-strong">
-            ishaan<span className="t-dim">@</span>nexus
+            ishaan<span className="t-dim">@</span>iratansh
           </div>
           <div className="t-dim">──────────────</div>
-          <Row k="OS" v="NEXUS 1.0 (browser)" />
+          <Row k="OS" v="iratansh 1.0 (browser)" />
           <Row k="Host" v={profile.education.school} />
           <Row k="Kernel" v="React 18 + TypeScript" />
           <Row k="Uptime" v={formatDuration(Date.now() - ctx.sessionStart)} />
-          <Row k="Shell" v="nxsh" />
+          <Row k="Shell" v="ish" />
           <Row k="Role" v="SDE Co-op @ RBC" />
           <Row k="Langs" v={skills.Languages.join(" ")} />
           <div className="t-swatch">
@@ -315,7 +315,7 @@ export const commands: Record<string, Command> = {
     usage: "motion",
     run: (_, ctx) => {
       ctx.cycleMotion();
-      return <span className="t-ok">motion preference toggled — see the status bar</span>;
+      return <span className="t-ok">motion preference toggled</span>;
     },
   },
   privacy: {
@@ -331,7 +331,7 @@ export const commands: Record<string, Command> = {
     run: (_, ctx) => (ctx.close(), null),
   },
 
-  // ——— Easter eggs ———
+  // --- Easter eggs ---
   sudo: {
     desc: "Elevate privileges",
     hidden: true,
@@ -371,7 +371,7 @@ export const commands: Record<string, Command> = {
     ) )
   ........
   |      |]
-  \\      /    HTTP 418 — I'm a teapot.
+  \\      /    HTTP 418: I'm a teapot.
    \`----'`}</pre>
     ),
   },
@@ -382,11 +382,11 @@ export const commands: Record<string, Command> = {
       <div>
         <div>PING ishaan (127.0.0.1): 56 data bytes</div>
         <div>64 bytes from ishaan: icmp_seq=0 ttl=64 time=0.042 ms</div>
-        <div className="t-dim">— reply received. Response time to email is slower; see `contact`.</div>
+        <div className="t-dim">Reply received. Response time to email is slower; see `contact`.</div>
       </div>
     ),
   },
-  vim: { desc: "Edit", hidden: true, run: () => "You are now trapped in vim. Just kidding — type :q (or anything else)." },
+  vim: { desc: "Edit", hidden: true, run: () => "You are now trapped in vim. Just kidding. Type :q (or anything else)." },
   ":q": { desc: "Quit vim", hidden: true, run: () => "Freedom." },
   hello: { desc: "Say hi", hidden: true, run: () => "Hey! 👋  Try `about`, or `open papertrade`." },
   overdrive: {

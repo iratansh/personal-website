@@ -22,7 +22,7 @@ function inject(src: string, attrs: Record<string, string>, onload?: () => void)
 
 /**
  * Cloudflare Web Analytics. The beacon records the initial load and, in SPA mode, every
- * history.pushState/popstate navigation by itself — so pageview() is a no-op here.
+ * history.pushState/popstate navigation by itself, so pageview() is a no-op here.
  * It strips query strings and #fragments from URLs, and has no custom-event API.
  */
 export function cloudflareProvider(token: string): Provider {
@@ -44,7 +44,7 @@ type GoatCounter = {
 };
 
 /**
- * GoatCounter (optional). Supports custom events, but events carry no properties — they're
+ * GoatCounter (optional). Supports custom events, but events carry no properties; they're
  * recorded as paths, so properties are folded into the event name: "github/iratansh/Shrinkr".
  */
 export function goatcounterProvider(endpoint: string): Provider {

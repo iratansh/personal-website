@@ -15,10 +15,11 @@ const SECTIONS = [
   ["problem", "Problem"],
   ["architecture", "Architecture"],
   ["stack", "Stack"],
-  ["challenges", "Challenges"],
   ["decisions", "Decisions"],
   ["metrics", "Metrics"],
 ] as const;
+
+const num = (sid: string) => String(SECTIONS.findIndex(([s]) => s === sid) + 1).padStart(2, "0");
 
 export default function ProjectDetail({ id }: { id: string }) {
   const p = projectById[id];
@@ -58,7 +59,7 @@ export default function ProjectDetail({ id }: { id: string }) {
 
       <header className="detail-head">
         <div className="label">
-          <span className="accent">svc-{String(idx + 1).padStart(2, "0")}</span> <span className="dim">/</span>{" "}
+          <span className="accent">Project {String(idx + 1).padStart(2, "0")}</span> <span className="dim">/</span>{" "}
           {p.kind === "upstream" ? "upstream contribution" : p.kind}
         </div>
         <h1 className="detail-title">{p.name}</h1>
@@ -103,17 +104,17 @@ export default function ProjectDetail({ id }: { id: string }) {
 
         <div className="detail-content">
           <section id="sec-overview" className="detail-sec">
-            <SectionHead index="01" title="Overview" />
+            <SectionHead index={num("overview")} title="Overview" />
             <p className="detail-lead">{p.overview}</p>
           </section>
 
           <section id="sec-problem" className="detail-sec">
-            <SectionHead index="02" title="Problem" />
+            <SectionHead index={num("problem")} title="Problem" />
             <blockquote className="detail-problem">{p.problem}</blockquote>
           </section>
 
           <section id="sec-architecture" className="detail-sec">
-            <SectionHead index="03" title="Architecture" />
+            <SectionHead index={num("architecture")} title="Architecture" />
             <Reveal>
               <div className="frame detail-arch">
                 <ArchitectureDiagram nodes={p.architecture.nodes} edges={p.architecture.edges} />
@@ -123,7 +124,7 @@ export default function ProjectDetail({ id }: { id: string }) {
           </section>
 
           <section id="sec-stack" className="detail-sec">
-            <SectionHead index="04" title="Technology stack" />
+            <SectionHead index={num("stack")} title="Technology stack" />
             <ul className="stack-list">
               {p.stack.map((s) => (
                 <li key={s} className="chip">
@@ -133,24 +134,12 @@ export default function ProjectDetail({ id }: { id: string }) {
             </ul>
           </section>
 
-          <section id="sec-challenges" className="detail-sec">
-            <SectionHead index="05" title="Engineering challenges" />
-            <ol className="challenge-list">
-              {p.challenges.map((c, i) => (
-                <Reveal as="li" key={i} delay={i * 0.05}>
-                  <span className="mono accent">{String.fromCharCode(65 + i)}</span>
-                  <p>{c}</p>
-                </Reveal>
-              ))}
-            </ol>
-          </section>
-
           <section id="sec-decisions" className="detail-sec">
-            <SectionHead index="06" title="Key implementation decisions" />
+            <SectionHead index={num("decisions")} title="Key implementation decisions" />
             <div className="decision-list">
               {p.decisions.map((d, i) => (
                 <Reveal key={d.title} className="decision" delay={i * 0.05}>
-                  <span className="label">ADR-{String(i + 1).padStart(3, "0")}</span>
+                  <span className="label">{String(i + 1).padStart(2, "0")}</span>
                   <h3>{d.title}</h3>
                   <p>{d.body}</p>
                 </Reveal>
@@ -159,7 +148,7 @@ export default function ProjectDetail({ id }: { id: string }) {
           </section>
 
           <section id="sec-metrics" className="detail-sec">
-            <SectionHead index="07" title="Measured results" />
+            <SectionHead index={num("metrics")} title="Measured results" />
             {p.metrics.length ? (
               <div className="metric-grid">
                 {p.metrics.map((m) => (

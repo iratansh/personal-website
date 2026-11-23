@@ -1,5 +1,5 @@
 /**
- * Site Telemetry — analytics status console. DEV ONLY (compiled out of production by App.tsx).
+ * Site Telemetry: analytics status console. DEV ONLY (compiled out of production by App.tsx).
  *
  * It deliberately shows no traffic numbers: Cloudflare Web Analytics has no documented API for
  * the beacon's data, and this static site holds no API credentials. Traffic lives in the
@@ -33,11 +33,11 @@ function rating(v: number, good: number, poor: number) {
 /** Metrics the Cloudflare Web Analytics dashboard reports for this site. */
 const CF_METRICS = [
   ["Visits & page views", "over time, per page path"],
-  ["Popular pages", "incl. /registry/<project> — every project has a real URL"],
+  ["Popular pages", "incl. /registry/<project>; every project has a real URL"],
   ["Referrers", "traffic sources (query strings such as UTM tags are not logged)"],
   ["Countries", "derived from IP at request time"],
   ["Browsers, OS, device type", "from the user agent"],
-  ["Core Web Vitals", "LCP, INP, CLS — field data from real visitors"],
+  ["Core Web Vitals", "LCP, INP, CLS: field data from real visitors"],
 ] as const;
 
 export default function Telemetry() {
@@ -67,7 +67,7 @@ export default function Telemetry() {
             The site, <span className="serif accent-2">observing itself</span>.
           </>
         }
-        lede="Analytics status for this website. This module exists only in local development builds. It shows no traffic numbers — those live in the Cloudflare dashboard — just configuration and real signals from this tab."
+        lede="Analytics status for this website. This module exists only in local development builds. It shows no traffic numbers (those live in the Cloudflare dashboard), just configuration and real signals from this tab."
       />
 
       <div className="tm-grid">
@@ -227,7 +227,7 @@ export default function Telemetry() {
                 <div key={v.key} className="vital">
                   <span className="label">{v.label}</span>
                   <span className="vital-value mono">
-                    {value === undefined ? "—" : v.unit ? Math.round(value) : value.toFixed(3)}
+                    {value === undefined ? "n/a" : v.unit ? Math.round(value) : value.toFixed(3)}
                     {value !== undefined && v.unit && <small> {v.unit}</small>}
                   </span>
                   {r ? (
@@ -242,7 +242,7 @@ export default function Telemetry() {
             })}
           </div>
           <p className="tm-foot dim">
-            PerformanceObserver in this tab, on the dev server — not representative of production. Field data from real
+            PerformanceObserver in this tab, on the dev server, not representative of production. Field data from real
             visitors is in the Cloudflare dashboard.
           </p>
         </section>

@@ -1,14 +1,15 @@
 /**
- * Shared content types. Everything a visitor reads lives in /src/data —
+ * Shared content types. Everything a visitor reads lives in /src/data, so
  * edit those files, not the components, to update the site.
  */
 
 export type DomainId =
-  | "infrastructure"
-  | "cloud"
-  | "distributed"
-  | "observability"
   | "backend"
+  | "fullstack"
+  | "distributed"
+  | "sre"
+  | "cloud"
+  | "observability"
   | "ai";
 
 export interface Domain {
@@ -63,7 +64,6 @@ export interface Project {
     nodes: ArchNode[];
     edges: ArchEdge[];
   };
-  challenges: string[];
   decisions: Decision[];
   metrics: Metric[];
   /** Shown when there are no published numbers. */
@@ -94,6 +94,8 @@ export interface LabEntry {
   description: string;
   repo?: string;
   tags: string[];
+  /** Set when the entry was work done in a role (an `experience` id) rather than a side project. */
+  roleId?: string;
 }
 
 export type NoteBlock =

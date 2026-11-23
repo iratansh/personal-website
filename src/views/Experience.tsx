@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { useNexus } from "../lib/nexus";
 import { toHref } from "../lib/routes";
 import { experience } from "../data/experience";
+import { lab } from "../data/lab";
+import { Icon } from "../components/ui/Icon";
 import { profile } from "../data/profile";
 import { currentMonthIndex, formatMonth, monthIndex } from "../lib/hooks";
 import { Reveal, ViewHeader } from "../components/ui/Primitives";
@@ -41,7 +43,7 @@ export default function Experience() {
         index="03"
         kicker="Experience"
         title="An operational timeline."
-        lede="Production work across banking SRE, industrial telemetry, and robotics research — read it like a deployment log."
+        lede="Production work across agentic AI and internal tooling at a bank, full-stack and data engineering in heavy industry, and robotics research."
       />
 
       <div className="gantt frame" role="img" aria-label="Timeline of roles">
@@ -126,6 +128,18 @@ export default function Experience() {
                       </li>
                     ))}
                   </ul>
+                  {lab.some((l) => l.roleId === r.id) && (
+                    <div className="log-repos">
+                      <span className="label">Research repos</span>
+                      {lab
+                        .filter((l) => l.roleId === r.id)
+                        .map((l) => (
+                          <a key={l.id} className="link-arrow" href={toHref({ module: "lab", param: l.id })}>
+                            {l.name} <Icon name="arrowRight" />
+                          </a>
+                        ))}
+                    </div>
+                  )}
                   <div className="log-stack">
                     {r.stack.map((s) => (
                       <span key={s} className="chip">

@@ -11,7 +11,7 @@ export const projects: Project[] = [
     tagline: "Fault-tolerant OpenTelemetry log collector with a write-ahead log and admission control.",
     kind: "pipeline",
     language: "Go",
-    domains: ["observability", "distributed", "infrastructure"],
+    domains: ["observability", "distributed", "sre", "cloud"],
     stack: [
       "Go",
       "OpenTelemetry",
@@ -26,9 +26,9 @@ export const projects: Project[] = [
     ],
     repo: "https://github.com/iratansh/Telemetry-Collector",
     overview:
-      "A Go collector for OpenTelemetry logs, built to study concurrency, backpressure, and failure handling. Logs arrive over OTLP/gRPC, are admitted into a custom write-ahead log, batched by a bounded worker pool, and exported to Loki with retries. The collector exposes its own metrics to Prometheus, and the whole stack comes with provisioned Grafana dashboards. A disposable GKE deployment adds Kubernetes pod and node state metrics and real pod logs through a per-node log agent.",
+      "A Go collector for OpenTelemetry logs. Requests are written to a write-ahead log, batched by a bounded worker pool, and exported to Loki with retries. Prometheus and Grafana watch the collector itself, locally or on GKE.",
     problem:
-      "A telemetry pipeline sits in the blast radius of every incident: when downstream backends slow down or the collector crashes, logs are exactly what you can't afford to lose. The goal was at-least-once delivery across process restarts, with overload pushed back to senders explicitly instead of absorbed by unbounded memory growth.",
+      "When backends slow down or the collector crashes, logs are exactly what you can't afford to lose. The goal: at-least-once delivery across restarts, and overload pushed back to senders instead of absorbed into memory.",
     architecture: {
       caption: "Ingest path (top) and the collector's own observability path (bottom).",
       nodes: [
@@ -53,42 +53,29 @@ export const projects: Project[] = [
         { from: "loki", to: "grafana" },
       ],
     },
-    challenges: [
-      "Making durability cheap enough: every admitted request is appended to the WAL, so fsync cost lands directly on request latency.",
-      "Keeping memory bounded under bursts — the queue, the worker count, and the pending-byte budget are all capped, and overload must surface to senders as RESOURCE_EXHAUSTED rather than as latency or OOM.",
-      "Proving recovery actually works: a benchmark seeds durable WAL records in a child process that exits without closing the WAL, then measures scan and replay in the parent.",
-    ],
     decisions: [
       {
-        title: "Write-ahead log before the queue",
-        body: "Requests are acknowledged only after a WAL append and sync, so anything acknowledged survives a crash. On restart the WAL is scanned, frames validated, Protobuf decoded, and pending work replayed through the same worker pool; checkpoints mark records as exported.",
+        title: "Acknowledge only after the WAL",
+        body: "Nothing is acked until it's appended and synced, so acked data survives a crash. On restart the WAL is scanned and pending work replayed through the same worker pool.",
       },
       {
-        title: "Group sync instead of per-record fsync",
-        body: "The WAL syncs every 2 ms or every 32 records, whichever comes first, and a batch's checkpoint records are written together behind a single sync. This trades a small bounded delay for far fewer syncs under load.",
+        title: "Group sync, not per-record fsync",
+        body: "Durability puts fsync on the request path. Syncing every 2 ms or 32 records, whichever comes first, trades a small bounded delay for far fewer syncs under load.",
       },
       {
         title: "Reject, don't buffer",
-        body: "A bounded jobs channel, a fixed export worker pool, and a byte budget mean overload returns RESOURCE_EXHAUSTED to the sender. In an unpaced 50,000-event burst the collector accepted 16,000 events and rejected 340 requests with no other RPC errors — overload stayed visible and bounded.",
+        body: "Queue, workers, and pending bytes are all capped, so overload returns RESOURCE_EXHAUSTED instead of growing latency or memory. In a 50,000-event burst: 16,000 accepted, 340 requests rejected, no other errors.",
       },
       {
-        title: "The collector observes itself",
-        body: "Queue depth, pending bytes, goroutines, heap, and RSS are exported to Prometheus; the load driver samples them every 50 ms so each benchmark run carries its own resource profile.",
+        title: "Prove recovery, don't assume it",
+        body: "A benchmark kills a child process mid-write, then measures WAL scan and replay in the parent. Queue depth, heap, and goroutines are sampled every 50 ms so each run carries its own resource profile.",
       },
     ],
     metrics: [
-      {
-        value: "8,000/s",
-        label: "sustained log records",
-        context: "GKE deployment. The earlier local baseline (Apple M2 Pro) was 2,000 events/s paced for 60 s with no rejections.",
-      },
-      { value: "21 ms", label: "P99 request latency", context: "Same GKE run. Local baseline: 17.3 ms P99." },
-      {
-        value: "66 ms",
-        label: "to reconstruct 10,000 pending requests on restart",
-        context: "WAL scan, frame validation, and Protobuf decode before replay through the worker pool.",
-      },
-      { value: "1", label: "max queue depth across 1,200 samples", context: "Local paced run · heap 15.5 MB, 28 goroutines, RSS 47.2 MB." },
+      { value: "8,000/s", label: "sustained log records", context: "On GKE. Local baseline: 2,000/s." },
+      { value: "21 ms", label: "P99 request latency", context: "Same GKE run." },
+      { value: "66 ms", label: "to rebuild 10,000 pending requests on restart" },
+      { value: "1", label: "max queue depth across 1,200 samples", context: "Local paced run." },
     ],
   },
   {
@@ -97,7 +84,7 @@ export const projects: Project[] = [
     tagline: "Reactive paper-trading platform with live market data and idempotent order execution.",
     kind: "platform",
     language: "Java",
-    domains: ["backend", "distributed", "cloud"],
+    domains: ["backend", "distributed", "fullstack", "cloud"],
     stack: [
       "Java 21",
       "Spring Boot 3",
@@ -117,9 +104,9 @@ export const projects: Project[] = [
     ],
     repo: "https://github.com/iratansh/PaperTrade",
     overview:
-      "A paper-trading platform for practicing with real US equities and $100,000 of play money. The backend is reactive end to end — Netty, R2DBC, and WebClient — with JWT auth, market and limit orders, a queued order book for after-hours and resting limit orders, live prices streamed over Server-Sent Events, watchlist price alerts, and portfolio snapshots for real historical growth charts. Deployable to AWS (ECS Fargate, RDS, ElastiCache, SQS, ALB) through Terraform and GitHub Actions.",
+      "Paper trading with real US equities and $100,000 of play money. A reactive Java backend (WebFlux, R2DBC) handles market and limit orders, streams live prices over SSE, and fires watchlist alerts. Deploys to AWS through Terraform.",
     problem:
-      "Trading looks simple until two requests touch the same account at once. Balance, holdings, and the ledger have to move together, a retried submission must never fill twice, and live prices need to reach every open browser without opening a provider connection per user.",
+      "Trading looks simple until two requests touch the same account. Balance, holdings, and the ledger must move together, a retry must never fill twice, and live prices must reach every browser without one provider connection per user.",
     architecture: {
       caption: "One shared market-data stream fans out to clients and the alert engine; orders commit under a short-lived row lock.",
       nodes: [
@@ -142,34 +129,28 @@ export const projects: Project[] = [
         { from: "sink", to: "api", label: "fan-out" },
       ],
     },
-    challenges: [
-      "Keeping lock windows short in a reactive stack where a naïve order path would hold a row lock across a network call to the price provider.",
-      "Atomic writes to balance, holdings, and the ledger across four tables, with retries that never double-fill.",
-      "Carrying the security context across thread hops — reactive requests don't stay on one thread, so ThreadLocal-based security doesn't work.",
-      "Portfolio history can't be reconstructed from today's prices; it has to be captured as it happens.",
-    ],
     decisions: [
       {
         title: "Locks never span network I/O",
-        body: "The market price is fetched before the order transaction opens, so the pessimistic FOR UPDATE lock on the account is held only for fast local writes.",
+        body: "The price is fetched before the transaction opens, so the FOR UPDATE row lock covers only fast local writes. Balance, holdings, and ledger commit together or not at all, and retries never double-fill.",
       },
       {
         title: "One upstream socket, many subscribers",
-        body: "A single Finnhub WebSocket feeds a reactive multicast sink that fans out to every SSE client and to the price-alert engine (Observer pattern), instead of one provider connection per user.",
+        body: "A single Finnhub WebSocket feeds a multicast sink that fans out to every SSE client and the alert engine, instead of one provider connection per user.",
       },
       {
-        title: "Interfaces at every provider boundary",
-        body: "MarketDataService, HistoryProvider, and OrderQueue are interfaces with swappable implementations — Finnhub vs. Twelve Data for history, a local DB poller vs. SQS for the order queue.",
+        title: "Swappable providers",
+        body: "Market data, price history, and the order queue sit behind interfaces: Finnhub or Twelve Data for history, a local DB poller or SQS for orders.",
       },
       {
         title: "Capture, don't compute",
-        body: "A scheduled job snapshots total portfolio value so growth charts reflect real history rather than a reconstruction from current prices.",
+        body: "A scheduled job snapshots portfolio value, so growth charts show real history instead of a reconstruction from today's prices.",
       },
     ],
     metrics: [
       { value: "<40 ms", label: "P95 order commit latency" },
-      { value: "−99%", label: "upstream quote calls", context: "Redis cache-aside in front of the quote provider." },
-      { value: "4", label: "tables written atomically per fill", context: "Balance, holdings, and ledger writes commit together or not at all." },
+      { value: "−99%", label: "upstream quote calls", context: "Redis cache-aside." },
+      { value: "4", label: "tables written atomically per fill" },
     ],
   },
   {
@@ -178,7 +159,7 @@ export const projects: Project[] = [
     tagline: "Distributed URL shortener with a read-through cache and asynchronous click analytics.",
     kind: "service",
     language: "Go",
-    domains: ["cloud", "distributed", "backend"],
+    domains: ["backend", "distributed", "cloud", "fullstack"],
     stack: [
       "Go",
       "Gin",
@@ -196,9 +177,9 @@ export const projects: Project[] = [
     ],
     repo: "https://github.com/iratansh/Shrinkr",
     overview:
-      "A URL shortener split into a Go + Gin API and a Go analytics worker, both on ECS Fargate behind an Application Load Balancer. Redirects resolve through ElastiCache Redis first and RDS PostgreSQL on a miss; every redirect publishes a click event to SQS, which the worker consumes into a clicks table. Kubernetes manifests and a Helm chart exist as scaffolding alongside the ECS deployment.",
+      "A URL shortener: a Go API and a Go analytics worker on ECS Fargate behind an ALB. Redirects hit Redis first, then PostgreSQL; each click goes to SQS for the worker to record.",
     problem:
-      "The redirect path is the hot path — it should do one cache read and return a 302. Analytics are valuable but must never slow that path down or take it out when the analytics store is unhealthy.",
+      "The redirect is the hot path: one cache read, then a 302. Analytics must never slow it down, or take it out when the analytics store is unhealthy.",
     architecture: {
       caption: "Redirects stay synchronous and cache-first; analytics move off the hot path through SQS.",
       nodes: [
@@ -220,27 +201,26 @@ export const projects: Project[] = [
         { from: "worker", to: "rds", label: "INSERT clicks" },
       ],
     },
-    challenges: [
-      "Keeping redirects available when Redis is degraded — cache failures are logged and the API falls back to PostgreSQL.",
-      "Not losing click events between the API and the database while keeping the redirect path free of analytics writes.",
-      "Locking down network paths: the worker has no inbound port, and the API only accepts traffic from the ALB security group.",
-    ],
     decisions: [
       {
-        title: "Read-through cache on redirect",
-        body: "GET /:code reads Redis first; on a miss the API reads PostgreSQL and repopulates Redis. POST /shorten writes to PostgreSQL and then attempts to cache the mapping.",
+        title: "Read-through cache, Postgres fallback",
+        body: "Redirects read Redis first. On a miss, or when Redis is degraded, the API reads PostgreSQL and repopulates the cache.",
       },
       {
         title: "Delete after durable write",
-        body: "The worker long-polls SQS and deletes a message only after the click row is inserted, giving at-least-once processing of click events.",
+        body: "The worker deletes an SQS message only after the click row is inserted: at-least-once delivery, with no analytics writes on the redirect path.",
       },
       {
-        title: "Same code path locally and in AWS",
-        body: "When SQS is disabled for local development, the API falls back to direct PostgreSQL click inserts, so the system runs under Docker Compose without AWS.",
+        title: "Least-privilege networking",
+        body: "The worker has no inbound port, and the API only accepts traffic from the load balancer.",
+      },
+      {
+        title: "Runs without AWS",
+        body: "With SQS disabled, the API writes clicks straight to PostgreSQL, so the whole system runs under Docker Compose.",
       },
     ],
     metrics: [],
-    metricsNote: "No published benchmarks yet — the repository documents the architecture and AWS deployment shape.",
+    metricsNote: "No published benchmarks yet.",
   },
   {
     id: "aso-dashboard",
@@ -248,7 +228,7 @@ export const projects: Project[] = [
     tagline: "Upstream contribution: a ready-to-use Grafana dashboard for Azure Service Operator.",
     kind: "upstream",
     language: "Grafana JSON · PromQL",
-    domains: ["observability", "infrastructure", "cloud"],
+    domains: ["observability", "cloud", "sre"],
     stack: ["Grafana", "Prometheus", "PromQL", "Kubernetes", "Azure Service Operator"],
     repo: "https://github.com/Azure/azure-service-operator",
     links: [
@@ -259,9 +239,9 @@ export const projects: Project[] = [
       { label: "ASO metrics docs", href: "https://azure.github.io/azure-service-operator/guide/metrics/" },
     ],
     overview:
-      "Azure Service Operator lets teams manage Azure resources with kubectl. It exposes Prometheus metrics, but there was no ready-made dashboard for controller health, performance, and reconciliation activity. This contribution (November 2026 onward) ships one: 28 charts across six sections, delivered as v2/config/grafana/azure-service-operator.json.",
+      "Azure Service Operator manages Azure resources from Kubernetes and exposes Prometheus metrics, but shipped no dashboard. This upstream contribution adds one: 28 charts across six sections.",
     problem:
-      "Operators running ASO had the raw metrics but had to build panels from scratch to answer basic questions: are reconciles failing, is the work queue backing up, is Azure throttling us?",
+      "Operators had the raw metrics but had to build panels from scratch to answer basic questions: are reconciles failing, is the queue backing up, is Azure throttling us?",
     architecture: {
       caption: "Controllers emit Prometheus metrics; the dashboard turns them into six operational views.",
       nodes: [
@@ -278,30 +258,27 @@ export const projects: Project[] = [
         { from: "prom", to: "dash", label: "PromQL" },
       ],
     },
-    challenges: [
-      "Choosing thresholds that mean something: warnings turn yellow at a 5% error ratio or queue depth of 50, and red at 20%, depth 200, any Azure throttling, or one or more panics.",
-      "Keeping high-cardinality views readable — most breakdowns are limited to the top 10 controllers or resource types.",
-      "Filtering correctly: controller filters apply to Overview, Reconciliation, and Work queue; Azure, webhook, and process metrics are filtered by namespace.",
-    ],
     decisions: [
       {
         title: "Overview first",
-        body: "Six at-a-glance tiles — reconcile rate, error ratio, work-queue depth, Azure request rate, throttled requests, and reconcile panics — before any drill-down.",
+        body: "Six tiles up top: reconcile rate, error ratio, queue depth, Azure request rate, throttling, and panics.",
       },
       {
-        title: "Sections that mirror the failure modes",
-        body: "Reconciliation, Work queue, Azure Resource Manager, Webhooks, and Controller process each answer one class of question, from slowest controllers by p95 to goroutine count.",
+        title: "One section per failure mode",
+        body: "Reconciliation, work queue, Azure Resource Manager, webhooks, and controller process each answer one class of question.",
       },
       {
-        title: "Sensible defaults",
-        body: "Namespace defaults to azureserviceoperator-system, refresh is 30 seconds, and the default range is 3 hours.",
+        title: "Thresholds that mean something",
+        body: "Yellow at 5% errors or queue depth 50; red at 20%, depth 200, any Azure throttling, or any panic.",
+      },
+      {
+        title: "Readable at high cardinality",
+        body: "Most breakdowns show only the top 10 controllers or resource types.",
       },
     ],
     metrics: [
-      { value: "28", label: "charts", context: "Excludes the six section headers." },
+      { value: "28", label: "charts" },
       { value: "6", label: "sections" },
-      { value: "30 s", label: "refresh interval" },
-      { value: "3 h", label: "default time range" },
     ],
   },
   {
@@ -324,9 +301,9 @@ export const projects: Project[] = [
     ],
     repo: "https://github.com/iratansh/MarketPulse",
     overview:
-      "A stream-processing stack for simulated equities data. A Java producer generates ticks for a configurable set of tickers and publishes them to Kafka. A Flink job keys the stream by ticker, computes the volume-weighted average price (VWAP) over tumbling windows, and writes results to a TimescaleDB hypertable, which Grafana charts. Kafka, TimescaleDB, and Grafana run under Docker Compose, and Terraform provisions an EC2 host to run the same stack in AWS.",
+      "A streaming pipeline for simulated equities. A Java producer publishes ticks to Kafka, a Flink job computes per-ticker VWAP over tumbling windows, and TimescaleDB stores the results for Grafana. Runs under Docker Compose or on EC2 via Terraform.",
     problem:
-      "VWAP is a running aggregate per symbol, so it has to be computed continuously over an unbounded stream. The work was building a pipeline where the producer, the stream processor, and the store can each be tuned on their own, and where dashboards query compact rollups instead of every raw result.",
+      "VWAP is a running aggregate per symbol over an unbounded stream. Producer, processor, and store each had to be tunable on their own, and dashboards needed compact rollups, not raw results.",
     architecture: {
       caption: "Ticks flow left to right through Kafka and Flink; Terraform provisions the host the containers run on.",
       nodes: [
@@ -348,86 +325,26 @@ export const projects: Project[] = [
         { from: "tf", to: "ec2", label: "provisions" },
       ],
     },
-    challenges: [
-      "Producing at a steady target rate: a scheduled task fires every 100 ms and sends one tick's share of the per-second target (10,000 messages/s by default), with a per-second report of what was actually acknowledged.",
-      "Keeping per-symbol state correct in the stream: the job keys by ticker so each window aggregates one symbol's price × volume and volume sums.",
-      "Writing a continuous result stream into a relational store without one round-trip per row.",
-    ],
     decisions: [
       {
-        title: "Batch at both ends",
-        body: "The producer uses lz4 compression, a 5 ms linger, and 64 KB batches. The Flink JDBC sink flushes every 100 rows or every second, whichever comes first, and retries up to three times.",
+        title: "Steady-rate producer",
+        body: "A task fires every 100 ms with a tenth of the per-second target (10,000/s by default) and reports what was actually acknowledged.",
       },
       {
         title: "Ticker as the partition key",
-        body: "Keying Kafka records by ticker keeps each symbol's ticks in order within a partition. The Flink job keys on the same field, so window state is per symbol.",
+        body: "Kafka and Flink both key by ticker, so each symbol's ticks stay ordered and window state stays per symbol.",
       },
       {
-        title: "Let the database do the rollups",
-        body: "vwap_metrics is a TimescaleDB hypertable indexed on (ticker, time). A continuous aggregate maintains one-minute buckets on a one-minute refresh policy, so dashboards can read rollups rather than raw window output.",
+        title: "Batch at both ends",
+        body: "The producer uses lz4, a 5 ms linger, and 64 KB batches. The JDBC sink flushes every 100 rows or every second, with up to three retries.",
       },
       {
-        title: "Configuration from the environment",
-        body: "Brokers, topic, tickers, target rate, window length (5 s by default), and JDBC settings all come from environment variables, so the same jars run locally and on the EC2 host.",
+        title: "Let the database roll up",
+        body: "A TimescaleDB continuous aggregate keeps one-minute buckets, so dashboards read rollups instead of raw window output.",
       },
     ],
     metrics: [],
-    metricsNote:
-      "No published benchmarks yet. The producer's 10,000 messages/s is a configured target, not a measured throughput.",
-  },
-  {
-    id: "nsrun",
-    name: "nsrun",
-    tagline: "A small container runtime in C: Linux namespaces, cgroup limits, chroot, and veth networking.",
-    kind: "runtime",
-    language: "C",
-    domains: ["infrastructure"],
-    stack: ["C", "Linux namespaces", "cgroups", "clone(2)", "chroot", "veth", "Linux bridge", "iproute2", "Make", "Docker"],
-    repo: "https://github.com/iratansh/nsrun",
-    overview:
-      "A learning-focused container runtime that builds up what `docker run` does from first principles. nsrun clones a child process into new PID, UTS, mount, and network namespaces, sets its hostname, chroots it into a supplied root filesystem, and execs the requested command. Before the clone it creates a cgroup with memory, CPU, and PID limits. If networking is requested it also connects the container to a host bridge through a veth pair. It runs on Linux only, needs root, and is built for exploration, not production.",
-    problem:
-      "A container isn't a VM. It's an ordinary Linux process with a restricted view of the system. The goal was to make that concrete by writing the isolation, resource limits, and network setup directly against kernel interfaces, without a container library in between.",
-    architecture: {
-      caption: "The parent prepares cgroups and networking, clones the child into new namespaces, then waits and cleans up.",
-      nodes: [
-        { id: "cli", label: "nsrun CLI", sub: "rootfs · limits · ip", col: 0, row: 0, tone: "client" },
-        { id: "cg", label: "cgroup", sub: "memory · cpu · pids", col: 1, row: 0, tone: "service" },
-        { id: "net", label: "Bridge + veth", sub: "nsrun-br0", col: 1, row: 1, tone: "service" },
-        { id: "clone", label: "clone()", sub: "PID · UTS · mount · net", col: 2, row: 0, tone: "service" },
-        { id: "child", label: "Container process", sub: "hostname · chroot · exec", col: 3, row: 0, tone: "store" },
-        { id: "rootfs", label: "rootfs", sub: "e.g. Alpine minirootfs", col: 3, row: 1, tone: "external" },
-      ],
-      edges: [
-        { from: "cli", to: "cg", label: "create + limit" },
-        { from: "cli", to: "net", label: "if --ip" },
-        { from: "cg", to: "clone" },
-        { from: "clone", to: "child" },
-        { from: "net", to: "child", label: "veth moved in" },
-        { from: "rootfs", to: "child", label: "chroot" },
-      ],
-    },
-    challenges: [
-      "Ordering setup between two processes: the cgroup and bridge must exist before the clone, while attaching the PID to the cgroup and moving the veth end into the child's network namespace can only happen after it.",
-      "Cleaning up on every failure path: each setup step that fails tears down the cgroup and namespace bookkeeping created before it.",
-      "Shelling out to iproute2 safely: interface names are validated (15 characters max, alphanumerics, dash, underscore) before they reach a command line.",
-    ],
-    decisions: [
-      {
-        title: "Use clone() directly",
-        body: "The child runs on its own 1 MB stack, created with CLONE_NEWPID, CLONE_NEWUTS, CLONE_NEWNS, and CLONE_NEWNET, so it becomes PID 1 in its own namespace with a private hostname, mount table, and network stack.",
-      },
-      {
-        title: "Resource limits as files",
-        body: "Limits are written straight into the cgroup filesystem: memory in bytes (M and G suffixes accepted), CPU as a CFS quota over a 100 ms period (--cpu 0.5 gives 50%), and a maximum PID count.",
-      },
-      {
-        title: "Small modules with narrow APIs",
-        body: "Namespaces, containers, cgroups, and networking each have their own header and source file, and main.c just orchestrates them. A non-Linux build compiles to a stub that explains the requirements.",
-      },
-    ],
-    metrics: [],
-    metricsNote: "A work in progress built for exploration. There are no benchmarks.",
+    metricsNote: "No published benchmarks yet. 10,000 messages/s is a configured target, not a measurement.",
   },
   {
     id: "evaluate",
@@ -435,7 +352,7 @@ export const projects: Project[] = [
     tagline: "AI mock-interview platform with LLM question generation, answer scoring, and speech.",
     kind: "application",
     language: "Java · TypeScript",
-    domains: ["backend", "ai"],
+    domains: ["fullstack", "backend", "ai"],
     stack: [
       "Java 17",
       "Spring Boot 3",
@@ -454,9 +371,9 @@ export const projects: Project[] = [
     ],
     repo: "https://github.com/iratansh/Evaluate",
     overview:
-      "A platform for practicing technical interviews in five domains: software engineering, data science, AI/ML, hardware/ECE, and robotics. A Spring Boot backend grounds each question in a domain knowledge base, generates it with a locally hosted Ollama model, and scores the candidate's answer from 0 to 10 with feedback and suggestions. Answers can be typed or spoken; Azure Speech handles speech-to-text and reads questions aloud. The Next.js frontend runs timed sessions with an animated avatar. The backend was rewritten from Python to Spring Boot in February 2026 and moved to PostgreSQL in May 2026.",
+      "Mock technical interviews in five domains. A Spring Boot backend generates questions with a local Ollama model, grounded in a domain knowledge base, and scores answers 0–10 with feedback. Answers can be typed or spoken; the Next.js frontend runs timed sessions.",
     problem:
-      "An interview simulator depends on three external pieces: an LLM, a speech service, and blob storage. Any of them can be slow, missing, or unconfigured on a developer's machine. The app needed to keep running a full session regardless.",
+      "The app depends on an LLM, a speech service, and blob storage, any of which can be slow or missing on a developer's machine. A full session still has to work.",
     architecture: {
       caption: "The API grounds prompts in a local knowledge base; every external dependency has a fallback.",
       nodes: [
@@ -477,136 +394,26 @@ export const projects: Project[] = [
         { from: "speech", to: "blob", label: "audio" },
       ],
     },
-    challenges: [
-      "Getting structured output from a small local model: the evaluation response is parsed section by section for a score, feedback, and suggestions, with fallbacks if the format drifts.",
-      "Keeping scores honest: the evaluation prompt tells the model to give 0–1 for answers that are off-topic, in the wrong domain, or incoherent.",
-      "Handling browser audio: WebM and WAV recordings are normalized to WAV before speech-to-text.",
-    ],
     decisions: [
       {
-        title: "Lightweight retrieval over curated topics",
-        body: "Each domain is a markdown file split into sections at startup. A question pulls the sections with the most keyword overlap into the prompt. Adding a domain only takes a new topics file because the service discovers domains on boot.",
+        title: "Lightweight retrieval",
+        body: "Each domain is a markdown file split into sections; a question pulls in the sections with the most keyword overlap. A new domain is just a new file.",
       },
       {
         title: "Degrade, don't fail",
-        body: "Ollama calls time out after 60 seconds and fall back to a bank of pre-written questions plus a heuristic scorer based on length and domain keywords. Speech is optional, and Blob Storage falls back to the local filesystem.",
+        body: "LLM calls time out after 60 s and fall back to pre-written questions and a heuristic scorer. Speech is optional; blob storage falls back to local disk.",
       },
       {
-        title: "One command to run, CI to keep it that way",
-        body: "Docker Compose starts the backend, frontend, and Ollama together. GitHub Actions runs backend tests, API endpoint checks, ESLint, TypeScript checks, and both the development and production Docker builds.",
+        title: "Parse defensively, score honestly",
+        body: "Small-model output is parsed section by section, with fallbacks when the format drifts. The prompt scores off-topic or incoherent answers 0–1.",
+      },
+      {
+        title: "One command to run",
+        body: "Docker Compose starts the backend, frontend, and Ollama. CI runs tests, lint, type checks, and both Docker builds.",
       },
     ],
     metrics: [],
     metricsNote: "No published benchmarks. Scoring quality depends on the local model.",
-  },
-  {
-    id: "tempo",
-    name: "Tempo",
-    tagline: "Scheduled ELT for Spotify listening history: Airflow, a MinIO data lake, and a dbt star schema.",
-    kind: "pipeline",
-    language: "Python · SQL",
-    domains: ["backend"],
-    stack: ["Python", "Apache Airflow", "Spotify Web API", "MinIO", "PostgreSQL 15", "dbt", "Apache Superset", "Docker Compose"],
-    repo: "https://github.com/iratansh/Tempo",
-    overview:
-      "A small data platform for personal listening data. Every three hours an Airflow DAG extracts recently played tracks from the Spotify Web API, writes the raw JSON to a MinIO bucket, loads it into a PostgreSQL landing table, and checks the load. dbt turns the raw JSONB into a staging view and a star schema with track, artist, and album dimensions plus a listening-event fact table, which Superset uses for dashboards. The whole stack runs under Docker Compose.",
-    problem:
-      "Spotify only exposes the 50 most recent plays, so history has to be collected on a schedule or it's lost. Extraction windows overlap and tasks get retried, which means the pipeline has to cope with duplicate data and partial runs without double-counting plays.",
-    architecture: {
-      caption: "Airflow owns extract and load; dbt owns transformation; the raw payload is kept in both the lake and the warehouse.",
-      nodes: [
-        { id: "spotify", label: "Spotify Web API", sub: "recently played · 50", col: 0, row: 0, tone: "external" },
-        { id: "dag", label: "Airflow DAG", sub: "every 3 h · 3 retries", col: 1, row: 0, tone: "service" },
-        { id: "minio", label: "MinIO", sub: "raw JSON objects", col: 2, row: 0, tone: "store" },
-        { id: "raw", label: "PostgreSQL", sub: "raw_data JSONB", col: 3, row: 0, tone: "store" },
-        { id: "stg", label: "dbt staging", sub: "flatten JSONB", col: 3, row: 1, tone: "service" },
-        { id: "star", label: "Star schema", sub: "3 dimensions + fact", col: 2, row: 1, tone: "store" },
-        { id: "superset", label: "Superset", sub: "dashboards", col: 1, row: 1, tone: "observe" },
-      ],
-      edges: [
-        { from: "spotify", to: "dag", label: "extract" },
-        { from: "dag", to: "minio", label: "put object" },
-        { from: "minio", to: "raw", label: "load" },
-        { from: "raw", to: "stg" },
-        { from: "stg", to: "star", label: "dedupe" },
-        { from: "star", to: "superset" },
-      ],
-    },
-    challenges: [
-      "Overlapping extraction windows: a play can show up in several consecutive extracts.",
-      "Retries that must not duplicate data: each task retries three times with a five-minute delay.",
-      "Moving data between tasks without passing whole payloads through Airflow: only the MinIO object key goes through XCom.",
-    ],
-    decisions: [
-      {
-        title: "Land raw, transform later",
-        body: "Each extract is saved as one immutable JSON object in MinIO and as one JSONB row in PostgreSQL. All parsing happens in dbt, so models can be rebuilt from the original payloads.",
-      },
-      {
-        title: "Idempotency at two layers",
-        body: "The load uses ON CONFLICT on the extraction timestamp, so a retried load is skipped. In dbt, the fact table keeps one row per (played_at, track_id) using ROW_NUMBER, prefers the latest extraction, and derives a surrogate key from the same pair.",
-      },
-      {
-        title: "Verify every load",
-        body: "A final DAG task checks the landing table's row count and the latest extraction's track count. dbt schema tests enforce unique and not-null keys on the models.",
-      },
-    ],
-    metrics: [],
-    metricsNote: "A personal-scale pipeline. There are no benchmarks.",
-  },
-  {
-    id: "voice-modulator",
-    name: "Voice Modulator",
-    tagline: "Real-time pitch shifting in C with a threaded audio pipeline and an FFT phase vocoder.",
-    kind: "application",
-    language: "C",
-    domains: ["backend"],
-    stack: ["C", "PortAudio", "FFTW3", "OpenMP", "POSIX threads", "GTK+ 3", "Cairo", "CoreAudio"],
-    repo: "https://github.com/iratansh/Voice-Modulator",
-    overview:
-      "A live voice-effects application. Microphone audio is captured through PortAudio, pitch-shifted by an FFT-based phase vocoder, and played back in real time. A GTK interface with custom Cairo-drawn knobs controls the effect. Separate input, processing, and output threads are coordinated with a mutex, condition variables, and a circular buffer.",
-    problem:
-      "Real-time audio has a hard deadline. If a frame isn't ready when the output device needs it, you hear a glitch. Spectral pitch shifting is expensive, so capture, processing, and playback had to run concurrently, and the processing step had to finish within the time one frame takes to play.",
-    architecture: {
-      caption: "Three threads hand frames along a guarded pipeline; the GUI writes parameters the processing thread reads.",
-      nodes: [
-        { id: "mic", label: "Microphone", sub: "PortAudio input", col: 0, row: 0, tone: "client" },
-        { id: "in", label: "Input thread", col: 1, row: 0, tone: "service" },
-        { id: "ring", label: "Circular buffer", sub: "mutex-guarded", col: 2, row: 0, tone: "queue" },
-        { id: "proc", label: "Processing thread", sub: "gate · vocoder · limiter", col: 3, row: 0, tone: "service" },
-        { id: "out", label: "Output thread", sub: "PortAudio output", col: 4, row: 0, tone: "client" },
-        { id: "gui", label: "GTK GUI", sub: "Cairo knobs", col: 3, row: 1, tone: "observe" },
-      ],
-      edges: [
-        { from: "mic", to: "in" },
-        { from: "in", to: "ring", label: "write" },
-        { from: "ring", to: "proc", label: "input_ready" },
-        { from: "proc", to: "out", label: "output_ready" },
-        { from: "gui", to: "proc", label: "pitch" },
-      ],
-    },
-    challenges: [
-      "Coordinating three threads without busy-waiting: condition variables signal input-ready and output-ready between stages.",
-      "Keeping the vocoder within the frame deadline: frames were reduced from 2,048 to 1,024 samples to lower latency.",
-      "Silence and clipping: frames below an RMS noise floor are muted rather than processed, and output passes through a hard limiter.",
-    ],
-    decisions: [
-      {
-        title: "Phase vocoder for pitch",
-        body: "1,024-sample frames with 4× overlap (a 256-sample hop) go through FFTW, and phase is tracked across frames so pitch changes without obvious phasing artifacts.",
-      },
-      {
-        title: "Parallelism where the math is",
-        body: "FFTW plans are created with one thread per core, and per-bin phase processing runs in an OpenMP parallel loop.",
-      },
-      {
-        title: "Custom widgets",
-        body: "The knobs are Cairo-drawn GTK widgets that map a rotation angle to a parameter range and display the current value.",
-      },
-    ],
-    metrics: [],
-    metricsNote:
-      "No latency measurements published. Pitch shifting is implemented; the speed, echo, and reverb knobs set parameters the audio path doesn't use yet.",
   },
 ];
 

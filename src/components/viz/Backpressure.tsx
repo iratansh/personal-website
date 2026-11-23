@@ -49,7 +49,7 @@ export default function Backpressure({ compact = false }: { compact?: boolean })
   const active = useActive(wrapRef);
   const [stats, setStats] = useState({ accepted: 0, rejected: 0, done: 0, depth: 0, p50: 0, p99: 0, thru: 0 });
 
-  const demo = useRef({ on: true, next: DEMO_FIRST });
+  const demo = useRef({ on: !compact, next: DEMO_FIRST }); // hero (compact) stays calm until clicked
   const touch = () => {
     demo.current.on = false;
   };
@@ -574,10 +574,10 @@ export default function Backpressure({ compact = false }: { compact?: boolean })
         <p className="bp-explain">
           {policy === "reject"
             ? load > 1
-              ? "Offered load exceeds capacity. The queue fills, the gate closes, and senders get an explicit rejection — latency stays bounded."
+              ? "Offered load exceeds capacity. The queue fills, the gate closes, and senders get an explicit rejection, so latency stays bounded."
               : "Capacity covers the load. Queue depth stays near zero; latency is roughly service time."
             : load > 1
-              ? "Nothing is refused, so the backlog grows without bound. Every new item waits behind it — watch p99 climb."
+              ? "Nothing is refused, so the backlog grows without bound. Every new item waits behind it. Watch p99 climb."
               : "Buffering looks harmless while capacity covers the load. Push the offered load past capacity, or hit Burst."}
         </p>
       </div>

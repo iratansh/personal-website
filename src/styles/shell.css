@@ -1,4 +1,4 @@
-/* ———————————————————————— Frame layout */
+/* ------------------------ Frame layout */
 .app {
   position: relative;
   display: grid;
@@ -26,7 +26,7 @@
   margin: 0 auto;
 }
 
-/* ———————————————————————— Backdrop */
+/* ------------------------ Backdrop */
 .backdrop {
   position: fixed;
   inset: 0;
@@ -66,7 +66,7 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* ———————————————————————— Top bar */
+/* ------------------------ Top bar */
 .topbar {
   grid-area: top;
   display: flex;
@@ -101,8 +101,8 @@
 .wordmark-text {
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.42em;
+  font-size: 14px;
+  letter-spacing: 0.02em;
   color: var(--fg-0);
 }
 
@@ -189,7 +189,7 @@
   border-color: rgba(var(--accent-rgb), 0.4);
 }
 
-/* ———————————————————————— Rail */
+/* ------------------------ Rail */
 .rail {
   grid-area: rail;
   display: flex;
@@ -304,12 +304,12 @@
   font-size: 10.5px;
 }
 
-/* ———————————————————————— Mobile nav */
+/* ------------------------ Mobile nav */
 .mobile-nav {
   display: none;
 }
 
-/* ———————————————————————— Toasts */
+/* ------------------------ Toasts */
 .toasts {
   position: fixed;
   right: var(--s-5);
@@ -345,7 +345,7 @@
   box-shadow: 0 0 10px var(--amber);
 }
 
-/* ———————————————————————— Loading state for lazy modules */
+/* ------------------------ Loading state for lazy modules */
 .module-loading {
   display: grid;
   place-items: center;
@@ -382,7 +382,7 @@
   }
 }
 
-/* ———————————————————————— Responsive */
+/* ------------------------ Responsive */
 @media (max-width: 1180px) {
   .topbar-search-text {
     display: none;

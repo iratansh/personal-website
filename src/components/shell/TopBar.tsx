@@ -2,18 +2,16 @@ import { useRef } from "react";
 import { useNexus } from "../../lib/nexus";
 import { moduleById } from "../../lib/routes";
 import { Icon } from "../ui/Icon";
-import { profile } from "../../data/profile";
 import { track } from "../../analytics";
 
 export function Wordmark({ compact = false }: { compact?: boolean }) {
   return (
-    <span className="wordmark" aria-label="NEXUS">
+    <span className="wordmark" aria-label="iratansh">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" className="wordmark-glyph">
-        <path d="M5 19V5l14 14V5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-        <circle cx="5" cy="5" r="2.1" fill="var(--accent-2)" />
-        <circle cx="19" cy="19" r="2.1" fill="var(--accent-2)" />
+        <path d="M4 6l7 6-7 6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="square" />
+        <path d="M13 18h7" stroke="var(--accent-2)" strokeWidth="1.8" />
       </svg>
-      {!compact && <span className="wordmark-text">NEXUS</span>}
+      {!compact && <span className="wordmark-text">iratansh</span>}
     </span>
   );
 }
@@ -41,12 +39,12 @@ export function TopBar() {
 
   return (
     <header className="topbar">
-      <button className="topbar-brand" onClick={onLogo} aria-label="NEXUS home">
+      <button className="topbar-brand" onClick={onLogo} aria-label="iratansh home">
         <Wordmark />
       </button>
 
       <nav className="crumbs mono" aria-label="Location">
-        <span className="crumb-root">nexus://{profile.firstName.toLowerCase()}</span>
+        <span className="crumb-root">~</span>
         {segments.map((s, i) => (
           <span key={i} className="crumb">
             <span className="crumb-sep">/</span>

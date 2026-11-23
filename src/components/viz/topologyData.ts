@@ -16,6 +16,8 @@ export interface TopoNode {
   hue: string;
   domains: DomainId[];
   route?: Route;
+  /** Overrides KIND_LABEL for this node, e.g. lab entries done in a role read as "Research". */
+  kindLabel?: string;
   // d3-force fields
   x?: number;
   y?: number;
@@ -78,7 +80,7 @@ export function buildTopology() {
       id: `r:${r.id}`,
       kind: "role",
       label: r.shortName,
-      sub: `${r.role} — ${r.company}`,
+      sub: `${r.role} · ${r.company}`,
       hue: HUES.emerald,
       domains: r.domains,
       route: { module: "experience", param: r.id },
@@ -92,6 +94,7 @@ export function buildTopology() {
       hue: HUES.violet,
       domains: l.domains,
       route: { module: "lab", param: l.id },
+      kindLabel: l.roleId ? "Research" : undefined,
     });
 
   return { nodes, links };
@@ -104,3 +107,5 @@ export const KIND_LABEL: Record<TopoKind, string> = {
   role: "Role",
   lab: "Experiment",
 };
+
+export const kindLabel = (n: TopoNode) => n.kindLabel ?? KIND_LABEL[n.kind];

@@ -5,14 +5,14 @@ Two separate concerns, kept separate on purpose:
 | Concern                          | Tool                                     | Status             |
 | -------------------------------- | ---------------------------------------- | ------------------ |
 | **Basic traffic analytics**      | Cloudflare Web Analytics (JS beacon)     | ✅ on               |
-| **Custom interaction events**    | GoatCounter                              | ⏸ ready — needs your site code |
-| **Custom in-site dashboard**     | —                                        | ❌ not built (see below) |
+| **Custom interaction events**    | GoatCounter                              | ⏸ ready, needs your site code |
+| **Custom in-site dashboard**     | n/a                                      | ❌ not built (see below) |
 
 Everything works on GitHub Pages: no backend, no API credentials anywhere.
 
 ---
 
-## 1. Basic traffic — Cloudflare Web Analytics
+## 1. Basic traffic: Cloudflare Web Analytics
 
 **Where to see the data:** Cloudflare dashboard → Web Analytics → this site.
 
@@ -128,22 +128,22 @@ Defined in `src/analytics/events.ts`. Link clicks are tracked by one delegated l
 | `outbound_link` | host, source |
 | `contact_mailto` | source |
 | `contact_copy_email` | source |
-| `contact_compose` | — |
+| `contact_compose` | none |
 | `project_view` | project |
 | `project_section` | project, section |
 | `topology_select` | node |
 | `lab_interaction` | action |
-| `terminal_open` | — |
+| `terminal_open` | none |
 | `terminal_command` | command (name only, never arguments) |
-| `palette_open` | — |
+| `palette_open` | none |
 | `palette_select` | item |
 | `easter_egg` | name |
 
 ## Sources
 
-- Cloudflare Web Analytics FAQ — https://developers.cloudflare.com/web-analytics/faq/
-- GraphQL datasets list (RUM datasets) — https://developers.cloudflare.com/data-localization/metadata-boundary/graphql-datasets/
-- Community: Web Analytics data via GraphQL — https://community.cloudflare.com/t/downloading-web-analytics-data/473295
-- Zaraz on non-proxied domains — https://developers.cloudflare.com/zaraz/advanced/domains-not-proxied/
+- Cloudflare Web Analytics FAQ: https://developers.cloudflare.com/web-analytics/faq/
+- GraphQL datasets list (RUM datasets): https://developers.cloudflare.com/data-localization/metadata-boundary/graphql-datasets/
+- Community: Web Analytics data via GraphQL: https://community.cloudflare.com/t/downloading-web-analytics-data/473295
+- Zaraz on non-proxied domains: https://developers.cloudflare.com/zaraz/advanced/domains-not-proxied/
 - GoatCounter: https://www.goatcounter.com/ · privacy https://www.goatcounter.com/privacy · GDPR https://www.goatcounter.com/help/gdpr · sessions https://www.goatcounter.com/help/sessions · terms https://www.goatcounter.com/help/terms · events https://www.goatcounter.com/help/events · JS https://www.goatcounter.com/help/js · SPA https://www.goatcounter.com/help/spa
-- Umami pricing — https://umami.is/pricing
+- Umami pricing: https://umami.is/pricing

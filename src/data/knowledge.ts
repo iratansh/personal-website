@@ -2,7 +2,7 @@ import type { Note } from "./types";
 
 /**
  * Knowledge base. These first entries are architecture breakdowns condensed from
- * the project READMEs — add your own articles and notes here.
+ * the project READMEs. Add your own articles and notes here.
  */
 export const notes: Note[] = [
   {
@@ -21,7 +21,7 @@ export const notes: Note[] = [
       },
       {
         type: "p",
-        text: "The trap is the price. A market order needs a fresh quote, and the quote comes from an external provider. If the lock is taken first, every other order on that account waits for a network round-trip it has nothing to do with — and a slow provider turns into lock contention.",
+        text: "The trap is the price. A market order needs a fresh quote, and the quote comes from an external provider. If the lock is taken first, every other order on that account waits for a network round-trip it has nothing to do with, and a slow provider turns into lock contention.",
       },
       { type: "h", text: "The ordering" },
       {
@@ -55,7 +55,7 @@ export const notes: Note[] = [
       },
       {
         type: "p",
-        text: "The collector caps three things: the jobs channel (queue capacity 128 by default), the export worker pool (4 workers), and pending bytes. When any limit is hit, the OTLP/gRPC receiver returns RESOURCE_EXHAUSTED and the sender decides what to do — retry with backoff, shed, or alert.",
+        text: "The collector caps three things: the jobs channel (queue capacity 128 by default), the export worker pool (4 workers), and pending bytes. When any limit is hit, the OTLP/gRPC receiver returns RESOURCE_EXHAUSTED and the sender decides what to do: retry with backoff, shed, or alert.",
       },
       { type: "h", text: "What it looked like under a burst" },
       {
@@ -67,7 +67,7 @@ export const notes: Note[] = [
       },
       {
         type: "p",
-        text: "The burst number is a saturation observation, not a capacity figure — the point is that overload stayed bounded and visible to the sender instead of turning into unbounded memory growth.",
+        text: "The burst number is a saturation observation, not a capacity figure. The point is that overload stayed bounded and visible to the sender instead of turning into unbounded memory growth.",
       },
       {
         type: "callout",
@@ -92,13 +92,13 @@ export const notes: Note[] = [
       {
         type: "list",
         items: [
-          "Scan: open the WAL, validate frames, decode Protobuf, build the pending replay list — 21.4 ms for 10,000 records.",
-          "Replay: push every pending record through the real worker pool and write durable checkpoints — 1.64 s, about 6,084 events/s.",
+          "Scan: open the WAL, validate frames, decode Protobuf, build the pending replay list: 21.4 ms for 10,000 records.",
+          "Replay: push every pending record through the real worker pool and write durable checkpoints: 1.64 s, about 6,084 events/s.",
         ],
       },
       {
         type: "p",
-        text: "Replay uses an immediate-success exporter, so it measures the collector's queue, workers, and WAL acknowledgements — not network or backend latency. Each seeded request carries exactly one event, so 10,000 events means 10,000 WAL records and 10,000 requests.",
+        text: "Replay uses an immediate-success exporter, so it measures the collector's queue, workers, and WAL acknowledgements, not network or backend latency. Each seeded request carries exactly one event, so 10,000 events means 10,000 WAL records and 10,000 requests.",
       },
       {
         type: "callout",

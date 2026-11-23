@@ -49,7 +49,7 @@ export default function Knowledge() {
         index="05"
         kicker="Knowledge Base"
         title="Notes from the engine room."
-        lede="Architecture breakdowns and engineering notes — the reasoning behind the systems in the registry."
+        lede="Architecture breakdowns and engineering notes: the reasoning behind the systems in the registry."
       />
 
       <div className={`kb ${route.param ? "has-open" : ""}`}>

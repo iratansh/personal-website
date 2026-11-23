@@ -28,7 +28,7 @@ export default function Overview() {
       <section className="hero" aria-labelledby="hero-name">
         <div className="hero-copy">
           <motion.div className="hero-status label" {...rise(0.05)}>
-            <span className="dot pulse" /> Online <span className="dim">—</span> {current.role} @ {current.shortName}
+            <span className="dot pulse" /> Online <span className="dim">·</span> {current.role} @ {current.shortName}
           </motion.div>
 
           <motion.h1 id="hero-name" className="hero-name" {...rise(0.12)}>
@@ -58,14 +58,7 @@ export default function Overview() {
 
           <motion.dl className="spec" {...rise(0.55)}>
             <div>
-              <dt className="label">Process</dt>
-              <dd>
-                {current.role}, {current.team}
-                <span className="dim"> · {current.company}</span>
-              </dd>
-            </div>
-            <div>
-              <dt className="label">Base</dt>
+              <dt className="label">Education</dt>
               <dd>
                 {profile.education.school}
                 <span className="dim"> · BSc CS, expected {profile.education.expected}</span>
@@ -73,10 +66,10 @@ export default function Overview() {
             </div>
             <div>
               <dt className="label">Focus</dt>
-              <dd>SRE · Platform · Distributed systems · Observability</dd>
+              <dd>Backend · Full-stack · Distributed systems · Cloud &amp; SRE · Applied AI</dd>
             </div>
             <div>
-              <dt className="label">Uplink</dt>
+              <dt className="label">Links</dt>
               <dd className="spec-links">
                 <a href={profile.links.github} target="_blank" rel="noreferrer">
                   <FaGithub /> {profile.handle}
@@ -102,8 +95,7 @@ export default function Overview() {
             <Backpressure compact />
           </Suspense>
           <p className="hero-viz-caption">
-            Overload, handled at the door. Requests past the queue&rsquo;s capacity are rejected instead of buffered,
-            so latency stays bounded. It&rsquo;s the admission control behind the{" "}
+            Live: past capacity, requests are rejected instead of queued, so latency stays bounded. From the{" "}
             <a href={toHref({ module: "registry", param: "telemetry-collector" })}>Telemetry Collector</a>.
           </p>
         </motion.div>
@@ -138,26 +130,14 @@ export default function Overview() {
         <h2 id="map-h" className="sr-only">
           How the work connects
         </h2>
-        <div className="ov-map-grid">
-          <Suspense fallback={<div className="topo-stage frame topo-loading label">Mapping topology…</div>}>
-            <Topology />
-          </Suspense>
-          <Reveal className="ov-map-copy">
-            <p>
-              Every project, role, and experiment I&rsquo;ve worked on, wired to the domains it touches. Click a node to
-              trace its connections, or drag one to pull the graph apart.
-            </p>
-            <h3 className="label">Focus areas</h3>
-            <ol className="focus-list">
-              {profile.interests.map((it, i) => (
-                <li key={it}>
-                  <span className="mono dim">{String(i + 1).padStart(2, "0")}</span>
-                  {it}
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-        </div>
+        <Reveal>
+          <p className="ov-map-lede">
+            Every project, role, and lab entry, wired to the domains it touches. Click a node to trace it.
+          </p>
+        </Reveal>
+        <Suspense fallback={<div className="topo-stage frame topo-loading label">Mapping topology…</div>}>
+          <Topology />
+        </Suspense>
       </section>
 
       <section className="ov-grid">
@@ -183,9 +163,9 @@ export default function Overview() {
 
       <Reveal className="ov-next">
         <a href={toHref({ module: "registry" })} className="ov-next-link">
-          <span className="label">Next module · 02</span>
+          <span className="label">Next</span>
           <span className="ov-next-title">
-            Project Registry <span className="dim">— {projects.length} services indexed</span>
+            Project Registry <span className="dim">· {projects.length} projects</span>
           </span>
           <Icon name="arrowRight" size={22} />
         </a>

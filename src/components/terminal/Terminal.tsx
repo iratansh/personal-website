@@ -17,7 +17,7 @@ const Banner = () => (
   <div className="t-banner">
     <pre className="t-logo">{`█▄ █ █▀▀ ▀▄▀ █ █ █▀
 █ ▀█ ██▄ █ █ █▄█ ▄█`}</pre>
-    <div className="t-dim">nxsh 1.0 — an interactive shell for this site. Type `help` to begin.</div>
+    <div className="t-dim">ish 1.0: an interactive shell for this site. Type `help` to begin.</div>
   </div>
 );
 
@@ -57,7 +57,7 @@ export function Terminal() {
     bumpCommands();
     const [name, ...args] = line.split(/\s+/);
     const cmd = commands[name.toLowerCase()];
-    // Only the command name is recorded — never arguments or free text.
+    // Only the command name is recorded, never arguments or free text.
     track("terminal_command", { command: cmd ? name.toLowerCase() : "unknown" });
     let cleared = false;
     const ctx: CommandContext = {
@@ -78,7 +78,7 @@ export function Terminal() {
       cmd.run(args, ctx)
     ) : (
       <span className="t-err">
-        nxsh: command not found: {name}. <span className="t-dim">Try `help`.</span>
+        ish: command not found: {name}. <span className="t-dim">Try `help`.</span>
       </span>
     );
     if (!cleared) setEntries((e) => [...e.slice(-80), { id, input: line, cwd, output }]);
@@ -141,7 +141,7 @@ export function Terminal() {
         >
           <header className="terminal-bar">
             <span className="label">
-              <Icon name="terminal" size={12} /> nxsh <span className="dim">— {cwd}</span>
+              <Icon name="terminal" size={12} /> ish <span className="dim">· {cwd}</span>
             </span>
             <span className="terminal-hint label">
               <span className="kbd">esc</span> close
@@ -185,7 +185,7 @@ export function Terminal() {
 function Prompt({ cwd }: { cwd: string }) {
   return (
     <span className="t-prompt" aria-hidden="true">
-      <span className="t-user">visitor@nexus</span>
+      <span className="t-user">visitor@iratansh</span>
       <span className="t-dim">:</span>
       <span className="t-cwd">{cwd}</span>
       <span className="t-dim">$</span>
