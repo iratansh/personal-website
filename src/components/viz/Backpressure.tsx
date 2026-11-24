@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { useNexus } from "../../lib/nexus";
+import { useSettings } from "../../os/settings";
 import { useActive, useSize } from "../../lib/hooks";
 import { Icon } from "../ui/Icon";
-import { toHref } from "../../lib/routes";
 import { track } from "../../analytics";
 
 type Policy = "reject" | "buffer";
@@ -38,7 +37,7 @@ function percentile(arr: number[], p: number) {
 }
 
 export default function Backpressure({ compact = false }: { compact?: boolean }) {
-  const { reducedMotion } = useNexus();
+  const { reducedMotion } = useSettings();
   const [rate, setRate] = useState(7);
   const [workers, setWorkers] = useState(3);
   const [capacity, setCapacity] = useState(12);
@@ -245,7 +244,7 @@ export default function Backpressure({ compact = false }: { compact?: boolean })
       const c = cfg.current;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
-      const MONO = '"Geist Mono", monospace';
+      const MONO = '"Geist Mono Variable", "Geist Mono", monospace';
       ctx.font = `10px ${MONO}`;
       ctx.textBaseline = "middle";
 
@@ -462,9 +461,6 @@ export default function Backpressure({ compact = false }: { compact?: boolean })
           >
             <Icon name="zap" /> Burst ×60
           </button>
-          <a className="link-arrow" href={toHref({ module: "lab" })}>
-            Tune it <Icon name="arrowRight" />
-          </a>
         </div>
       </div>
     );

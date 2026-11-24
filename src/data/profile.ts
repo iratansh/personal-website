@@ -20,9 +20,7 @@ export const profile = {
     after: "across the stack, from distributed backends and cloud infrastructure to the AI agents on top.",
   },
   intro:
-    "SDE co-op at RBC, building agentic AI incident tooling and compliance automation. Previously full-stack and data engineering at Elk Valley Resources, moving 600M+ telemetry records a day.",
-  openTo:
-    "Internships, co-ops, and new-grad roles in backend, full-stack, distributed systems, SRE, cloud infrastructure, and applied AI engineering.",
+    "SDE co-op at RBC, building agentic AI incident tooling and compliance automation. Previously full-stack and data engineering at Elk Valley Resources, working on pipelines that moved 600M+ telemetry records a day.",
   email: "iratansh@ualberta.ca",
   links: {
     github: "https://github.com/iratansh",

@@ -6,7 +6,7 @@ import { cloudflareProvider, goatcounterProvider, type Provider } from "./provid
  * Provider-agnostic analytics facade.
  *  - Honors Do Not Track, Global Privacy Control, and an on-site opt-out.
  *  - Loads third-party scripts lazily, after the page is idle.
- *  - Keeps an in-memory log of this session's events (never persisted) for the dev dashboard.
+ *  - Keeps an in-memory log of this session's events (never persisted) for the Analytics app.
  */
 
 export interface LoggedEvent {

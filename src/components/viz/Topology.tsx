@@ -8,7 +8,7 @@ import {
   forceSimulation,
   type Simulation,
 } from "d3-force";
-import { useNexus } from "../../lib/nexus";
+import { useSettings } from "../../os/settings";
 import { useActive, useSize } from "../../lib/hooks";
 import { domains } from "../../data/domains";
 import { profile } from "../../data/profile";
@@ -16,8 +16,8 @@ import { Icon } from "../ui/Icon";
 import { track } from "../../analytics";
 import { buildTopology, kindLabel, type TopoLink, type TopoNode } from "./topologyData";
 
-const MONO = '"Geist Mono", ui-monospace, monospace';
-const SANS = '"Geist", system-ui, sans-serif';
+const MONO = '"Geist Mono Variable", "Geist Mono", ui-monospace, monospace';
+const SANS = '"Geist Variable", "Geist", system-ui, sans-serif';
 
 const endpoints = (l: TopoLink) => [l.source as TopoNode, l.target as TopoNode] as const;
 
@@ -32,8 +32,9 @@ function hitRadius(n: TopoNode) {
   return n.kind === "core" ? 36 : n.kind === "domain" ? 26 : 20;
 }
 
-export default function Topology() {
-  const { reducedMotion, navigate } = useNexus();
+export default function Topology({ onOpen }: { onOpen?: (target: string) => void }) {
+  const { reducedMotion } = useSettings();
+  const navigate = (t: string) => onOpen?.(t);
   const [wrapRef, size] = useSize<HTMLDivElement>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const active = useActive(wrapRef);
@@ -497,7 +498,7 @@ export default function Topology() {
                     ? profile.intro
                     : sel.sub}
               </p>
-              {sel.route && (
+              {sel.route && onOpen && (
                 <button className="link-arrow" onClick={() => navigate(sel.route!)}>
                   Open {kindLabel(sel).toLowerCase()} <Icon name="arrowRight" />
                 </button>

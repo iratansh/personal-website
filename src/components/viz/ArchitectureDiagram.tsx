@@ -7,12 +7,12 @@ const GY = 38;
 const PAD = 14;
 
 const TONE: Record<NonNullable<ArchNode["tone"]>, string> = {
-  client: "#aab7b3",
-  service: "#34e0a1",
-  store: "#5ad8ff",
-  queue: "#ffbf5e",
-  external: "#a68bff",
-  observe: "#6b98ff",
+  client: "var(--tone-client, #aab7b3)",
+  service: "var(--tone-service, #34e0a1)",
+  store: "var(--tone-store, #5ad8ff)",
+  queue: "var(--tone-queue, #ffbf5e)",
+  external: "var(--tone-external, #a68bff)",
+  observe: "var(--tone-observe, #6b98ff)",
 };
 
 const TONE_LABEL: Record<NonNullable<ArchNode["tone"]>, string> = {
@@ -29,11 +29,15 @@ interface Props {
   edges: ArchEdge[];
   /** Decorative, scaled-to-fit preview: no legend, no hover, hidden from assistive tech. */
   thumbnail?: boolean;
+  /** Makes components clickable; the selected one stays highlighted like a hover. */
+  selected?: string | null;
+  onSelect?: (id: string) => void;
 }
 
-export function ArchitectureDiagram({ nodes, edges, thumbnail = false }: Props) {
+export function ArchitectureDiagram({ nodes, edges, thumbnail = false, selected = null, onSelect }: Props) {
   const uid = useId().replace(/:/g, "");
-  const [hover, setHover] = useState<string | null>(null);
+  const [hoverState, setHover] = useState<string | null>(null);
+  const hover = hoverState ?? selected;
   const cols = Math.max(...nodes.map((n) => n.col)) + 1;
   const rows = Math.max(...nodes.map((n) => n.row)) + 1;
   const GX = cols >= 5 ? 70 : 96; // wide pipelines get tighter gutters so text stays legible
@@ -104,7 +108,7 @@ export function ArchitectureDiagram({ nodes, edges, thumbnail = false }: Props) 
               <path d="M0,0.5 L7,4 L0,7.5" fill="none" stroke="currentColor" strokeWidth="1.2" />
             </marker>
             <pattern id={`grid-${uid}`} width="12" height="12" patternUnits="userSpaceOnUse">
-              <path d="M12 0H0V12" fill="none" stroke="rgba(150,220,200,0.04)" />
+              <path d="M12 0H0V12" fill="none" className="arch-grid" />
             </pattern>
           </defs>
           <rect width={width} height={height} fill={`url(#grid-${uid})`} />
@@ -143,14 +147,20 @@ export function ArchitectureDiagram({ nodes, edges, thumbnail = false }: Props) 
               <g
                 key={n.id}
                 transform={`translate(${x},${y})`}
-                className="arch-node"
-                style={{ opacity: dim ? 0.35 : 1 }}
+                className={`arch-node${selected === n.id ? " is-selected" : ""}`}
                 onMouseEnter={thumbnail ? undefined : () => setHover(n.id)}
                 onMouseLeave={thumbnail ? undefined : () => setHover(null)}
+                onClick={onSelect ? () => onSelect(n.id) : undefined}
+                onKeyDown={onSelect ? (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), onSelect(n.id)) : undefined}
+                tabIndex={onSelect ? 0 : undefined}
+                role={onSelect ? "button" : undefined}
+                aria-label={onSelect ? `${n.label}${n.sub ? `, ${n.sub}` : ""}` : undefined}
+                aria-pressed={onSelect ? selected === n.id : undefined}
+                style={{ opacity: dim ? 0.35 : 1, cursor: onSelect ? "pointer" : undefined }}
               >
                 <rect width={W} height={H} className="arch-node-bg" />
-                <rect width={2} height={H} fill={c} />
-                <path d={`M${W - 8},0 H${W} V8`} stroke={c} fill="none" opacity="0.6" />
+                <rect width={2} height={H} style={{ fill: c }} />
+                <path d={`M${W - 8},0 H${W} V8`} style={{ stroke: c }} fill="none" opacity="0.6" />
                 <text x={14} y={n.sub ? 23 : 32} className="arch-node-label">
                   {n.label}
                 </text>

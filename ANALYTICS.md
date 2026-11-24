@@ -104,16 +104,17 @@ owner's `skipgc` self-exclusion flag. GoatCounter's GDPR page says a consent not
 not required. `count.js` does not check Do Not Track itself; this site's loader does that.
 The hosted service is "free for reasonable public usage", and a personal site qualifies.
 
-## 4. Dev-only status console
+## 4. The Analytics app in iratanshOS
 
-`npm run dev` → **07 Site Telemetry**. It's compiled out of production builds. It shows:
+The desktop has an **Analytics** app with a lock badge. It is deliberately private:
 
-- whether the beacon is configured, plus a link to the Cloudflare dashboard;
-- a provider capability matrix, including whether each provider has a read API;
-- events fired in **your own tab** and the provider each one would go to (real, in memory only);
-- Web Vitals measured in your own tab (real, local, not representative of production).
+- it shows **no traffic numbers**, because this static site holds no API credentials and must not;
+- it links to the Cloudflare and GoatCounter dashboards, which need the owner's login;
+- it summarizes what is measured and links to `Privacy.md`;
+- it lists the events fired in **your own tab** and which provider each went to (real, in memory only).
 
-It never shows simulated or invented traffic numbers.
+It never shows simulated or invented traffic numbers. Opening a window updates the address bar
+with `pushState`, so Cloudflare's SPA mode records each opened project or document as a page view.
 
 ## Event catalog
 
@@ -123,6 +124,7 @@ Defined in `src/analytics/events.ts`. Link clicks are tracked by one delegated l
 | Event | Properties |
 | --- | --- |
 | `resume_download` | source |
+| `app_open` | app |
 | `outbound_github` | target, source |
 | `outbound_linkedin` | source |
 | `outbound_link` | host, source |

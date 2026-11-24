@@ -14,6 +14,7 @@ export const EVENTS = {
   project_section: { label: "Project section jumped to", props: ["project", "section"] },
   topology_select: { label: "Topology node inspected", props: ["node"] },
   lab_interaction: { label: "Simulator control used", props: ["action"] },
+  app_open: { label: "App or window opened", props: ["app"] },
   terminal_open: { label: "Terminal opened", props: [] },
   terminal_command: { label: "Terminal command run", props: ["command"] },
   palette_open: { label: "Command palette opened", props: [] },

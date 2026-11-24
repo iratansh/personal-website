@@ -135,12 +135,6 @@ canvas {
   color: var(--fg-2);
 }
 
-.serif {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
 
 .accent {
   color: var(--accent);
@@ -162,7 +156,7 @@ canvas {
   border-bottom-width: 2px;
   border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11.5px;
   color: var(--fg-1);
   background: var(--bg-2);
   line-height: 1;
@@ -228,7 +222,7 @@ canvas {
   height: 22px;
   padding: 0 8px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11.5px;
   letter-spacing: 0.04em;
   color: var(--fg-1);
   border: 1px solid var(--line-1);

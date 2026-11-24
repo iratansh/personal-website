@@ -1,0 +1,417 @@
+/* Reused visualizations: graph, architecture diagram, backpressure simulator. */
+/* Topology */
+.topo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.topo-stage {
+  position: relative;
+  height: clamp(440px, 66vh, 680px);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(var(--accent-rgb), 0.04), transparent 60%),
+    rgba(5, 7, 8, 0.4);
+}
+.topo-loading {
+  display: grid;
+  place-items: center;
+}
+.topo-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.topo-hud {
+  position: absolute;
+  pointer-events: none;
+  font-size: 11.5px;
+}
+.topo-hud-tl {
+  top: 14px;
+  left: 16px;
+}
+.topo-hud-tr {
+  top: 14px;
+  right: 16px;
+}
+.topo-hud-br {
+  bottom: 14px;
+  right: 16px;
+  color: var(--fg-2);
+}
+.topo-legend {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  display: flex;
+  gap: 14px;
+  font-size: 11.5px;
+  pointer-events: none;
+}
+.topo-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.lg {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 1.2px solid currentColor;
+  flex: none;
+}
+.topo-legend .lg-sq {
+  color: var(--cyan);
+}
+.topo-legend .lg-di {
+  color: var(--emerald);
+}
+.topo-legend .lg-ci {
+  color: var(--violet);
+}
+.lg-di {
+  transform: rotate(45deg) scale(0.85);
+}
+.lg-ci {
+  border-radius: 50%;
+}
+.lg-dom {
+  border-radius: 50%;
+  background: currentColor;
+  width: 6px;
+  height: 6px;
+}
+
+.topo-inspector {
+  position: absolute;
+  top: 44px;
+  right: 14px;
+  width: min(290px, calc(100% - 28px));
+  max-height: calc(100% - 88px);
+  overflow-y: auto;
+  padding: var(--s-4);
+  background: rgba(8, 11, 13, 0.9);
+  border: 1px solid var(--line-2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.9);
+}
+.topo-insp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.topo-insp-close {
+  color: var(--fg-2);
+  padding: 4px;
+}
+.topo-insp-close:hover {
+  color: var(--fg-0);
+}
+.topo-inspector h3 {
+  margin-top: 6px;
+  font-size: var(--fs-lg);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.topo-inspector > p {
+  margin: 8px 0 12px;
+  color: var(--fg-1);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+.topo-insp-sub {
+  margin: 14px 0 6px;
+}
+.topo-insp-list li button {
+  display: grid;
+  grid-template-columns: 12px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 4px;
+  text-align: left;
+  font-size: var(--fs-sm);
+  border-top: 1px solid var(--line-0);
+  transition: background var(--dur-1);
+}
+.topo-insp-list li button:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.topo-insp-list .mono {
+  font-size: 11.5px;
+}
+.topo-domains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Architecture diagram */
+.arch-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.arch-svg {
+  max-width: 100%;
+  height: auto;
+  min-width: 620px;
+  margin: 0 auto;
+}
+.arch-node {
+  cursor: default;
+  transition: opacity var(--dur-2);
+}
+.arch-node-bg {
+  fill: var(--arch-node, #0a0e10);
+  stroke: var(--line-2);
+  transition: stroke var(--dur-1);
+}
+.arch-node:hover .arch-node-bg {
+  stroke: var(--line-3);
+}
+.arch-node-label {
+  fill: var(--fg-0);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+}
+.arch-node-sub {
+  fill: var(--fg-1);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+.arch-edge {
+  color: var(--line-3);
+  transition: opacity var(--dur-2);
+}
+.arch-edge.lit {
+  color: var(--accent);
+}
+.arch-edge-base {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+.arch-edge-flow {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 14;
+  animation: flow 1.4s linear infinite;
+  opacity: 0.85;
+}
+@keyframes flow {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+.arch-edge-label-bg {
+  fill: var(--bg-0);
+  stroke: var(--line-1);
+}
+.arch-edge-label {
+  fill: var(--fg-1);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+.arch-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  margin-top: var(--s-3);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line-0);
+}
+.arch-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+}
+.arch-legend i {
+  width: 8px;
+  height: 2px;
+}
+
+.bp {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(300px, 1fr);
+  border: 1px solid var(--line-1);
+}
+.bp-stage {
+  position: relative;
+  min-height: 380px;
+  border: 0;
+  border-right: 1px solid var(--line-1);
+  background: rgba(5, 7, 8, 0.5);
+}
+.bp-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.bp-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 11.5px;
+  color: var(--amber);
+}
+.bp-console {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-5);
+}
+.bp-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.bp-slider {
+  display: grid;
+  grid-template-columns: 110px 1fr 40px;
+  align-items: center;
+  gap: var(--s-3);
+}
+.bp-slider .mono {
+  font-size: var(--fs-xs);
+  text-align: right;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--line-2);
+}
+input[type="range"]::-moz-range-track {
+  height: 1px;
+  background: var(--line-2);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 14px;
+  margin-top: -7px;
+  background: var(--accent);
+  border: 0;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 10px;
+  height: 14px;
+  background: var(--accent);
+  border: 0;
+  border-radius: 0;
+}
+input[type="range"]:disabled {
+  opacity: 0.3;
+}
+.bp-policy {
+  display: flex;
+  gap: 6px;
+}
+.bp-policy .chip {
+  height: 28px;
+  flex: 1;
+  justify-content: center;
+}
+.bp-policy .chip[aria-checked="true"] {
+  background: rgba(var(--accent-rgb), 0.1);
+  border-color: rgba(var(--accent-rgb), 0.5);
+  color: var(--accent);
+}
+.bp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.bp-actions .btn {
+  height: 32px;
+  padding: 0 10px;
+  font-size: 11.5px;
+}
+.bp-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin: 0;
+  background: var(--line-1);
+  border: 1px solid var(--line-1);
+}
+.bp-stats > div {
+  padding: 10px;
+  background: var(--bg-0);
+}
+.bp-stats dt {
+  font-size: 11.5px;
+}
+.bp-stats dd {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+}
+.bp-stats .warn {
+  color: var(--amber);
+}
+.bp-stats .bad {
+  color: var(--red);
+}
+.bp-explain {
+  font-size: var(--fs-sm);
+  color: var(--fg-1);
+  line-height: 1.6;
+  min-height: 4.8em;
+}
+
+/* Windows can be any width, so the simulator responds to its container, not the viewport. */
+.bp-host {
+  container-type: inline-size;
+}
+@container (max-width: 760px) {
+  .bp {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bp-stage {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-1);
+  }
+}
+@container (max-width: 460px) {
+  .bp-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bp-stage {
+    min-height: 300px;
+  }
+}
+
+.arch-grid {
+  stroke: var(--line-0);
+}
+/* Light mode: deeper tone accents so the coloured edges and bars hold up on white. */
+[data-theme="light"] .arch {
+  --arch-node: #ffffff;
+  --tone-client: #66736f;
+  --tone-service: #0e9e6c;
+  --tone-store: #0a85b8;
+  --tone-queue: #c47e16;
+  --tone-external: #6a4ad0;
+  --tone-observe: #3a63d6;
+}
+[data-theme="light"] .arch-edge-flow {
+  opacity: 0.7;
+}

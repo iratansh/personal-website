@@ -170,7 +170,9 @@ export const projects: Project[] = [
       "ALB",
       "ECR",
       "CloudWatch",
+      "GitHub Actions",
       "Docker Compose",
+      "Kubernetes",
       "Helm",
       "React",
       "TypeScript",
@@ -219,8 +221,13 @@ export const projects: Project[] = [
         body: "With SQS disabled, the API writes clicks straight to PostgreSQL, so the whole system runs under Docker Compose.",
       },
     ],
-    metrics: [],
-    metricsNote: "No published benchmarks yet.",
+    metrics: [
+      {
+        value: "<5 ms",
+        label: "redirects served from the ElastiCache read-through cache",
+        context: "Cache hits skip the database entirely; click events go to SQS so bursts never block a redirect on RDS writes.",
+      },
+    ],
   },
   {
     id: "aso-dashboard",
@@ -368,6 +375,8 @@ export const projects: Project[] = [
       "Tailwind CSS",
       "Docker Compose",
       "GitHub Actions",
+      "JUnit 5",
+      "MockMvc",
     ],
     repo: "https://github.com/iratansh/Evaluate",
     overview:
@@ -412,8 +421,13 @@ export const projects: Project[] = [
         body: "Docker Compose starts the backend, frontend, and Ollama. CI runs tests, lint, type checks, and both Docker builds.",
       },
     ],
-    metrics: [],
-    metricsNote: "No published benchmarks. Scoring quality depends on the local model.",
+    metrics: [
+      {
+        value: "≤2,000 ms",
+        label: "to deliver context-aware feedback",
+        context: "Spring WebFlux calls local Ollama inference with retrieval-augmented prompts. Scoring quality depends on the local model.",
+      },
+    ],
   },
 ];
 

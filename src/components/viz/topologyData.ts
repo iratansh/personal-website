@@ -4,7 +4,6 @@ import { experience } from "../../data/experience";
 import { lab } from "../../data/lab";
 import { profile } from "../../data/profile";
 import type { DomainId } from "../../data/types";
-import type { Route } from "../../lib/routes";
 
 export type TopoKind = "core" | "domain" | "project" | "role" | "lab";
 
@@ -15,7 +14,8 @@ export interface TopoNode {
   sub: string;
   hue: string;
   domains: DomainId[];
-  route?: Route;
+  /** Filesystem node to open from the inspector. */
+  route?: string;
   /** Overrides KIND_LABEL for this node, e.g. lab entries done in a role read as "Research". */
   kindLabel?: string;
   // d3-force fields
@@ -73,7 +73,7 @@ export function buildTopology() {
       sub: p.tagline,
       hue: HUES.cyan,
       domains: p.domains,
-      route: { module: "registry", param: p.id },
+      route: p.kind === "upstream" ? "opensource" : `project:${p.id}`,
     });
   for (const r of experience)
     addItem({
@@ -83,7 +83,7 @@ export function buildTopology() {
       sub: `${r.role} · ${r.company}`,
       hue: HUES.emerald,
       domains: r.domains,
-      route: { module: "experience", param: r.id },
+      route: "experience",
     });
   for (const l of lab)
     addItem({
@@ -93,7 +93,7 @@ export function buildTopology() {
       sub: l.description,
       hue: HUES.violet,
       domains: l.domains,
-      route: { module: "lab", param: l.id },
+      route: `lab:${l.id}`,
       kindLabel: l.roleId ? "Research" : undefined,
     });
 

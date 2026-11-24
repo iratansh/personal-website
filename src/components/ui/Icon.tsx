@@ -1,6 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
 import type { SVGProps } from "react";
-import type { ModuleId } from "../../lib/routes";
 
 /** Hairline icon set drawn on a 16px grid to match the interface's 1px borders. */
 const paths = {
@@ -52,14 +50,3 @@ export function Icon({ name, size = 16, ...rest }: { name: IconName; size?: numb
     </svg>
   );
 }
-
-export const moduleIcon: Record<ModuleId, IconName> = {
-  overview: "overview",
-  registry: "registry",
-  experience: "experience",
-  lab: "lab",
-  knowledge: "knowledge",
-  contact: "contact",
-  privacy: "shield",
-  telemetry: "telemetry",
-};
